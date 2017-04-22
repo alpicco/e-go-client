@@ -3,6 +3,7 @@ module Login exposing (main)
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
+import Navigation
 
 -- model
 
@@ -28,7 +29,6 @@ type Msg
     = UsernameInput String
     | PasswordInput String
 
-
 update : Msg -> Model -> Model
 update msg model =
     case msg of
@@ -38,16 +38,14 @@ update msg model =
         PasswordInput password ->
             { model | password = password }
 
-
-
 -- view
 
 
 view : Model -> Html Msg
 view model =
-    div [ style [ ("margin-top", "10%") ] ]
+    div [ style [ ("margin-top", "10%"), ("background", "url(clouds.jpg) no-repeat right top") ] ]
         [ div [ style [ ("width", "70%"), ("margin", "auto") ] ] 
-              [ h1 [Html.Attributes.style[ ("color", "#4caf50"), ("text-align", "center") ] ] [ text "L  o  g  i  n" ] ] 
+              [ h1 [Html.Attributes.style[ ("color", "white"), ("text-align", "center") ] ] [ text "Login" ] ] 
         , Html.form []
             [ div [style [ ("text-align", "center"), ("margin", "auto"), ("width", "50%"), ("padding", "10px")] ] [input
                 [ type_ "text"
@@ -63,11 +61,15 @@ view model =
                 , style [ ("width", "100%"), ("border-radius", "5px"), ("height", "20px")  ]]
                 [] 
             , div [ style [ ("height", "15px") ] ] []
-            , input [ type_ "submit", style [ ("background-color", "#4CAF50"), ("border", "none"), ("color", "white"), ("text-align", "center"), ("text-decoration", "none"), ("display", "inline-block"), ("font-size", "15px"), ("padding", "10px 20px"), ("border-radius", "3px") ] ]
-                [ text "Login" ] ]
+            , input [ type_ "submit", style [ ("background-color", "#4CAF50"),("border", "none"), ("color", "white"), ("text-align", "center"), ("text-decoration", "none"), ("display", "inline-block"), ("font-size", "15px"), ("padding", "10px 20px"), ("border-radius", "3px") ] ]
+                [ text "Submit" ] 
+            , button [style [ ("background-color", "#f22e2e"), ("border", "none"), ("color", "white"), ("text-align", "center"), ("text-decoration", "none"), ("display", "inline-block"), ("font-size", "15px"), ("padding", "10px 20px"), ("border-radius", "3px")]
+                     ]
+                     [text "Sign Up"]]
             ]
         , hr [] []
         ]
+
 
 main =
     Html.beginnerProgram
@@ -75,3 +77,4 @@ main =
         , view = view
         , update = update
         }
+
