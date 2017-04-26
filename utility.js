@@ -18,7 +18,7 @@ function onSubmitRegister(form){
     dataType: "text",
     data: myData,
     success: function() {
-      
+      alert("OK");
     },
     error: function(xhr) {
       alert(xhr.status);
@@ -29,16 +29,16 @@ function onSubmitRegister(form){
 }
 
 
-function onSubmitLogin(form){
-  var username = ("#user").val();
-  var password = ("#pass").val();
-    $.ajax({
+function onSubmitLogin(){
+  var user = document.getElementById("user").value;
+  var pass = document.getElementById("pass").value;
+  $.ajax({
     type: "POST",
     url: "https://e60c7c1b.ngrok.io/login",
-    contentType: "application/x-www-form-urlencoded",
-    data: "",
+    async: false,
     beforeSend: function (xhr) {
-      xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
     },
     success: function() {
       alert("OK");
