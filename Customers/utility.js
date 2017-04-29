@@ -1,10 +1,9 @@
-function onSubmitRegister(form){
-  
+function onSubmitRegister(form) {
   var frm = $(form);
   var formData = frm.serializeArray();
 
   var myData = {};
-  $.map(formData, function (obj,i) {
+  $.map(formData, function (obj, i) {
     myData[obj['name']] = obj['value'];
   });
 
@@ -17,10 +16,10 @@ function onSubmitRegister(form){
     contentType: "application/json; charset=utf-8",
     dataType: "text",
     data: myData,
-    success: function() {
-      
+    success: function () {
+      window.location = ("index.html");
     },
-    error: function(xhr) {
+    error: function (xhr) {
       alert(xhr.status);
     }
   });
@@ -29,7 +28,7 @@ function onSubmitRegister(form){
 }
 
 
-function onSubmitLogin(){
+function onSubmitLogin() {
   var user = document.getElementById("user").value;
   var pass = document.getElementById("pass").value;
   $.ajax({
@@ -40,11 +39,30 @@ function onSubmitLogin(){
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
     },
-    success: function() {
+    success: function (data) {
+      localStorage.setItem("token", data);
       window.location = ("product_list.html");
-      return true;
     },
-    error: function(xhr) {
+    error: function (xhr) {
+      alert(xhr.status);
+    }
+  });
+
+  return true;
+}
+
+function onLoadProductList() {
+  var token = localStorage.getItem("token");
+  $.ajax({
+    type: "GET",
+    url: "https://e60c7c1b.ngrok.io/products",
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+    },
+    success: function (data) {
+      alert(data);
+    },
+    error: function (xhr) {
       alert(xhr.status);
     }
   });
