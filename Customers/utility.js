@@ -60,7 +60,7 @@ function onLoadProductList() {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
     },
     success: function (data) {
-      alert(data);
+      alert("ciao" + data);
     },
     error: function (xhr) {
       alert(xhr.status);

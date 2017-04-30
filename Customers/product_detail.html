@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="utility.js"></script>
+    <link rel="stylesheet" type="text/css" href="product_detail.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <script>
+           $(document).ready(function(){
+            $("ul.menu-items > li").on("click",function(){
+                $("ul.menu-items > li").removeClass("active");
+                $(this).addClass("active");
+            })
+
+            $(".attr,.attr2").on("click",function(){
+                var clase = $(this).attr("class");
+
+                $("." + clase).removeClass("active");
+                $(this).addClass("active");
+            })
+
+            $(".btn-minus").on("click",function(){
+                var now = $(".section > div > input").val();
+                if ($.isNumeric(now)){
+                    if (parseInt(now) -1 > 0){ 
+                        now--;
+                    }
+                    $(".section > div > input").val(now);
+                }else{
+                    $(".section > div > input").val("1");
+                }
+            })            
+            $(".btn-plus").on("click",function(){
+                var now = $(".section > div > input").val();
+                if ($.isNumeric(now)){
+                    $(".section > div > input").val(parseInt(now)+1);
+                }else{
+                    $(".section > div > input").val("1");
+                }
+            })                        
+        }) 
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="product_list.html">Titolo stra figo</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-4 item-photo">
+                <img style="max-width:100%;" src=""
+                />
+            </div>
+            <div class="col-xs-5" style="border:0px solid gray">
+                <h3>Product name</h3>
+                <h6 class="title-price"><small>PRICE</small></h6>
+                <h3 id="price" style="margin-top:0px;">$399</h3>
+                <div class="section" style="padding-bottom:20px;">
+                    <h6 class="title-attr"><small>QUANTITY</small></h6>
+                    <div>
+                        <div class="btn-minus"><span class="glyphicon glyphicon-minus"></span></div>
+                        <input value="1" />
+                        <div class="btn-plus"><span class="glyphicon glyphicon-plus"></span></div>
+                    </div>
+                </div>
+
+                <div class="section" style="padding-bottom:20px;">
+                    <button class="btn btn-success"><span style="margin-right:20px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Buy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
