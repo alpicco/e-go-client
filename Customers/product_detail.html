@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Login</title>
+    <title>Your Product</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="utility.js"></script>
     <link rel="stylesheet" type="text/css" href="product_detail.css">
@@ -40,7 +40,8 @@
                 }else{
                     $(".section > div > input").val("1");
                 }
-            })                        
+            })   
+            $('a').on("click", productDetail())                     
         }) 
     </script>
 </head>
@@ -59,30 +60,7 @@
             </ul>
         </div>
     </nav>
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-4 item-photo">
-                <img style="max-width:100%;" src=""/>
-            </div>
-            <div class="col-xs-5" style="border:0px solid gray">
-                <h3>Product name</h3>
-                <h6 class="title-price"><small>PRICE</small></h6>
-                <h3 id="price" style="margin-top:0px;">$399</h3>
-                <div class="section" style="padding-bottom:20px;">
-                    <h6 class="title-attr"><small>QUANTITY</small></h6>
-                    <div>
-                        <div class="btn-minus"><span class="glyphicon glyphicon-minus"></span></div>
-                        <input value="1" />
-                        <div class="btn-plus"><span class="glyphicon glyphicon-plus"></span></div>
-                    </div>
-                </div>
-
-                <div class="section" style="padding-bottom:20px;">
-                    <button class="btn btn-success"><span style="margin-right:20px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Buy</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="detail"></div>
 </body>
 
 </html>
