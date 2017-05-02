@@ -134,7 +134,8 @@ function productDetail(name, caption, description, shippable, images) {
     '</div>',
     '</div>',
     '</div>'].join('');
-    var div = document.createElement('div');
-    div.innerHTML = html;
-    document.getElementById("detail").appendChild(div);
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  document.getElementById("detail").appendChild(div);
+
 }
