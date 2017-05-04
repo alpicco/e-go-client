@@ -96,7 +96,7 @@ function parseItem(data) {
       '<div class="small m-t-xs">' + description + '',
       '</div>',
       '<div class="m-t text-right">',
-      '<a href="product_detail.html" onclick="return productDetail(\'' + name + '\', \'' + caption + '\', \'' + description + '\', \'' + shippable + '\', \'' + images + '\')" class="btn btn-xs btn-outline btn-primary">Info</a>',
+      '<a href="product_detail.html?name='+name+'&image='+images+'" onclick="return productDetail()" class="btn btn-xs btn-outline btn-primary">Info</a>',
       '</div>',
       '</div>',
       '</div>',
@@ -108,28 +108,32 @@ function parseItem(data) {
     div.innerHTML = html;
     document.getElementsByTagName("body")[0].appendChild(div);
   });
+  //\'' + name + '\', \'' + caption + '\', \'' + description + '\', \'' + shippable + '\', \'' + images + '\'
 }
 
-function productDetail(name, caption, description, shippable, images) {
+function productDetail() {
+  var name = getParameterByName("name", window.location.href);
+  var image = getParameterByName("image", window.location.href);  
+
   var html = ['<div class="container">',
     '<div class="row">',
     '<div class="col-xs-4 item-photo">',
-    '<img style="max-width:100%;" src="' + images + '"/>',
+    '<img style="max-width:100%;" src="'+image+'" alt="Product Image"/>',
     '</div>',
     '<div class="col-xs-5" style="border:0px solid gray">',
-    '<h3>' + name + '</h3>',
+    '<h3>Sample</h3>',
     '<h6 class="title-price"><small>PRICE</small></h6>',
     '<h3 id="price" style="margin-top:0px;">$399</h3>',
     '<div class="section" style="padding-bottom:20px;">',
     '<h6 class="title-attr"><small>QUANTITY</small></h6>',
     '<div>',
     '<div class="btn-minus"><span class="glyphicon glyphicon-minus"></span></div>',
-    '<input value="1" />',
+    '<input id="quantity" value="1" />',
     '<div class="btn-plus"><span class="glyphicon glyphicon-plus"></span></div>',
     '</div>',
     '</div>',
     '<div class="section" style="padding-bottom:20px;">',
-    '<button class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Buy</button>',
+    '<button onclick="window.location=\'buy.html\'" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Buy</button>',
     '</div>',
     '</div>',
     '</div>',
@@ -138,4 +142,14 @@ function productDetail(name, caption, description, shippable, images) {
   div.innerHTML = html;
   document.getElementById("detail").appendChild(div);
 
+}
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
