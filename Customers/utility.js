@@ -11,7 +11,7 @@ function onSubmitRegister(form) {
 
   $.ajax({
     type: "POST",
-    url: 'https://e60c7c1b.ngrok.io/register',
+    url: 'https://fef514c7.ngrok.io/register',
     async: false,
     contentType: "application/json; charset=utf-8",
     dataType: "text",
@@ -33,7 +33,7 @@ function onSubmitLogin() {
   var pass = document.getElementById("pass").value;
   $.ajax({
     type: "POST",
-    url: "https://e60c7c1b.ngrok.io/login",
+    url: "https://fef514c7.ngrok.io/login",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -56,7 +56,7 @@ function onLoadProductList() {
   var auth = token["token"];
   $.ajax({
     type: "GET",
-    url: "https://e60c7c1b.ngrok.io/products",
+    url: "https://fef514c7.ngrok.io/products",
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Authorization", "Bearer " + auth);
     },
