@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upload</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="utility.js"></script>
+    <link rel="stylesheet" type="text/css" href="admin.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+</head>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dropZone = document.getElementById('drop-zone');
+        var uploadForm = document.getElementById('js-upload-form');
+
+        var startUpload = function (files) {
+
+        }
+
+        uploadForm.addEventListener('submit', function (e) {
+            var uploadFiles = document.getElementById('js-upload-files').files;
+            e.preventDefault();
+
+            startUpload(uploadFiles);
+        })
+
+        dropZone.ondrop = function (e) {
+            e.preventDefault();
+            this.className = 'upload-drop-zone';
+
+            startUpload(e.dataTransfer.files);
+        }
+
+        dropZone.ondragover = function () {
+            this.className = 'upload-drop-zone drop';
+            return false;
+        }
+
+        dropZone.ondragleave = function () {
+            this.className = 'upload-drop-zone';
+            return false;
+        }
+    });
+
+</script>
+
+<body>
+
+    <div class="container">
+        <div class="page-header" style="text-align: center">
+            <h2>Upload product</h2>
+        </div>
+
+        <form action="POST">
+            <div class="form-group">
+                <label for="name" class="col-lg-1">Title:</label>
+                <div class="col-lg-4">
+                    <input type="text" class="form-control" name="name" id="name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="caption" class="col-lg-1">Caption:</label>
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" name="caption" id="caption">
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="form-group" style="padding-bottom: 2cm">
+                <label for="description" class="col-lg-1">Description:</label>
+                <div class="col-lg-12">
+                    <textarea class="form-control" rows="3" style="resize:none" id="description"></textarea>
+                </div>
+            </div>
+            <br>
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <h4>Select files from your computer</h4>
+                    <input type="file" name="files[]" id="js-upload-files" multiple>
+                </div>
+            
+                <input type="submit" class="btn btn-sm btn-primary" id="js-upload-submit" value="Upload product"></button>
+            </div>
+        </form>
+    </div>
+</body>

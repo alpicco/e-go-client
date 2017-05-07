@@ -19,6 +19,15 @@
   position: relative;
 }
 
+.container input[type="text"] {
+  color: '#32325d';
+  height: 24px;
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  position: relative;
+}
+
 .StripeElement {
   background-color: white;
   padding: 8px 12px;

@@ -133,7 +133,7 @@ function productDetail() {
     '</div>',
     '</div>',
     '<div class="section" style="padding-bottom:20px;">',
-    '<button onclick="window.location=\'buy.html\'" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Buy</button>',
+    '<button onclick="#" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
     '</div>',
     '</div>',
     '</div>',

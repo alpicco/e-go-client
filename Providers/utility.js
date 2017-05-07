@@ -18,7 +18,7 @@ function onSubmitRegister(form) {
     dataType: "text",
     data: myData,
     success: function () {
-
+      window.location="index.html"
     },
     error: function (xhr) {
       alert(xhr.status);
@@ -41,8 +41,7 @@ function onSubmitLogin() {
       xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
     },
     success: function () {
-      window.location = ("product_list.html");
-      return true;
+      window.location = ("admin.html");
     },
     error: function (xhr) {
       alert(xhr.status);

@@ -14,10 +14,10 @@
 	<div class="modal-dialog">
 		<div class="login-container">
 			<h1>Login to Your Account</h1><br>
-			<form method="POST" onsubmit="return onSubmitLogin()">
+			<form method="POST">
 				<input type="text" name="Username" id="user" placeholder="Username">
 				<input type="password" name="Password" id="pass" placeholder="Password">
-				<input type="submit" name="Login" class="login loginmodal-submit">
+				<input type="button" name="Login" class="login loginmodal-submit" onclick="return onSubmitLogin()" value="Submit">
 			</form>
 			<div class="login-help">
 				<a href="register.html">Register</a>

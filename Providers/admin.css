@@ -1,0 +1,16 @@
+.container {
+  padding: 30px;
+  width: 100% !important;
+  margin: 0 auto;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+form input[type="text"], textarea{
+    color: '#32325d';
+  height: 24px;
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  position: relative;
+}
