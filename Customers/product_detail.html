@@ -9,40 +9,49 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
     <script>
-           $(document).ready(function(){
-            $("ul.menu-items > li").on("click",function(){
-                $("ul.menu-items > li").removeClass("active");
-                $(this).addClass("active");
-            })
-
-            $(".attr,.attr2").on("click",function(){
-                var clase = $(this).attr("class");
-
-                $("." + clase).removeClass("active");
-                $(this).addClass("active");
-            })
-
-            $(".btn-minus").on("click",function(){
-                var now = $(".section > div > input").val();
-                if ($.isNumeric(now)){
-                    if (parseInt(now) -1 > 0){ 
+        $(document).ready(function () {
+            /*$('.btn-minus').on("click", function () {
+                var now = $("#quantity").val();
+                if ($.isNumeric(now)) {
+                    if (parseInt(now) - 1 > 0) {
                         now--;
                     }
-                    $(".section > div > input").val(now);
-                }else{
-                    $(".section > div > input").val("1");
+                    $("#quantity").val(now);
+                } else {
+                    $("#quantity").val("1");
                 }
-            })            
-            $(".btn-plus").on("click",function(){
-                var now = $(".section > div > input").val();
-                if ($.isNumeric(now)){
-                    $(".section > div > input").val(parseInt(now)+1);
-                }else{
-                    $(".section > div > input").val("1");
+            });
+            $('.btn-plus').on("click", function () {
+                var now = $("#quantity").val();
+                if ($.isNumeric(now)) {
+                    $("#quantity").val(parseInt(now) + 1);
+                } else {
+                    $("#quantity").val("1");
                 }
-            })   
-            $('a').on("click", productDetail())                     
-        }) 
+            });*/
+            $('a').on("click", productDetail());
+        });
+
+        function add() {
+            var now = $("#quantity").val();
+            if ($.isNumeric(now)) {
+                $("#quantity").val(parseInt(now) + 1);
+            } else {
+                $("#quantity").val("1");
+            }
+        }
+
+        function sub() {
+            var now = $("#quantity").val();
+            if ($.isNumeric(now)) {
+                if (parseInt(now) - 1 > 0) {
+                    now--;
+                }
+                $("#quantity").val(now);
+            } else {
+                $("#quantity").val("1");
+            }
+        }
     </script>
 </head>
 
