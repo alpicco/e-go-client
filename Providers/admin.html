@@ -5,7 +5,7 @@
     <title>Upload</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="utility.js"></script>
-    <link rel="stylesheet" type="text/css" href="admin.css">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
 </head>
@@ -25,65 +25,38 @@
 
             startUpload(uploadFiles);
         })
-
-        dropZone.ondrop = function (e) {
-            e.preventDefault();
-            this.className = 'upload-drop-zone';
-
-            startUpload(e.dataTransfer.files);
-        }
-
-        dropZone.ondragover = function () {
-            this.className = 'upload-drop-zone drop';
-            return false;
-        }
-
-        dropZone.ondragleave = function () {
-            this.className = 'upload-drop-zone';
-            return false;
-        }
     });
 
 </script>
 
 <body>
+     <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="product_list.html">Titolo stra figo</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <div class="container">
         <div class="page-header" style="text-align: center">
             <h2>Upload product</h2>
         </div>
 
-        <form action="POST">
-            <div class="form-group">
-                <label for="name" class="col-lg-1">Title:</label>
-                <div class="col-lg-4">
-                    <input type="text" class="form-control" name="name" id="name">
-                </div>
+        <div class="modal-dialog">
+            <div class="register-container">
+                <form id="form" method="POST">
+                    <input type="text" name="title" placeholder="Name">
+                    <input type="text" name="producer" placeholder="Producer">
+                    <input type="text" name="price" placeholder="Price">
+                    <input type="file" name="image">
+                    </br>
+                    <input type="button" class="login loginmodal-submit" value="Upload" onclick="return postNewProduct()">
+                </form>
             </div>
-
-            <div class="form-group">
-                <label for="caption" class="col-lg-1">Caption:</label>
-                <div class="col-lg-6">
-                    <input type="text" class="form-control" name="caption" id="caption">
-                </div>
-            </div>
-            <br>
-            <br>
-            <div class="form-group" style="padding-bottom: 2cm">
-                <label for="description" class="col-lg-1">Description:</label>
-                <div class="col-lg-12">
-                    <textarea class="form-control" rows="3" style="resize:none" id="description"></textarea>
-                </div>
-            </div>
-            <br>
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <h4>Select files from your computer</h4>
-                    <input type="file" name="files[]" id="js-upload-files" multiple>
-                </div>
-            
-                <input type="submit" class="btn btn-sm btn-primary" id="js-upload-submit" value="Upload product"></button>
-            </div>
-        </form>
+        </div>
     </div>
 </body>
