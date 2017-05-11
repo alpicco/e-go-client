@@ -168,6 +168,8 @@ function productDetail(product) {
     '<p>' + description + '</p>',
     '<div class="section" style="padding-bottom:20px;">',
     '<button onclick="return addToCart(\'' + sku + '\')" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
+    '<div style="padding-bottom: 0"></div>',
+    '<button type="button" data-toggle="modal" data-target="#myModalNorm" class="btn btn-primary">Shipping info</button>',
     '</div>',
     '</div>',
     '</div>',
@@ -230,4 +232,40 @@ function addToCart(sku) {
       alert(xhr.responseText);
     }
   });
+}
+
+function updateShippingInfos(form) {
+  var token = JSON.parse(localStorage.getItem("token"));
+  var auth = token["token"];
+
+  var frm = $("#modalForm");
+  var formData = frm.serializeArray();
+
+  var myData = {};
+  $.map(formData, function (obj, i) {
+    myData[obj['name']] = obj['value'];
+  });
+
+  myData = JSON.stringify(myData);
+  alert(myData);
+
+  /*$.ajax({
+    type: "POST",
+    url: 'https://9839f3bb.ngrok.io/me/shipment',
+    async: false,
+    dataType: "text",
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Authorization", "Bearer " + auth);
+    },
+    data: myData,
+    success: function () {
+      alert();
+    },
+    error: function (xhr) {
+      alert(xhr.status);
+    }
+  });
+
+  return true;*/
 }
