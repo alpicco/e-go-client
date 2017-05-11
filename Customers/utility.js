@@ -20,7 +20,7 @@ function onSubmitRegister(form) {
       window.location = ("index.html");
     },
     error: function (xhr) {
-      alert(xhr.status);
+      alert(xhr.responseText);
     }
   });
 
@@ -44,7 +44,7 @@ function onSubmitLogin() {
       window.location = ("product_list.html");
     },
     error: function (xhr) {
-      alert(xhr.status);
+      alert(xhr.responseText);
     }
   });
 
@@ -64,7 +64,7 @@ function onLoadProductList() {
       parseItem(data);
     },
     error: function (xhr) {
-      alert(xhr.status);
+      alert(xhr.responseText);
     }
   });
 
@@ -203,7 +203,7 @@ function getProduct(product) {
       localStorage.setItem("data", JSON.stringify(data));
     },
     error: function (xhr) {
-      alert(xhr.status);
+      alert(xhr.responseText);
       return false;
     }
   });
@@ -269,7 +269,7 @@ function updateShippingInfos(form) {
       alert("Success");
     },
     error: function (xhr) {
-      alert(xhr.status);
+      alert(xhr.responseText);
     }
   });
 
