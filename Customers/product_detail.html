@@ -10,31 +10,12 @@
         crossorigin="anonymous">
     <script>
         $(document).ready(function () {
-            /*$('.btn-minus').on("click", function () {
-                var now = $("#quantity").val();
-                if ($.isNumeric(now)) {
-                    if (parseInt(now) - 1 > 0) {
-                        now--;
-                    }
-                    $("#quantity").val(now);
-                } else {
-                    $("#quantity").val("1");
-                }
-            });
-            $('.btn-plus').on("click", function () {
-                var now = $("#quantity").val();
-                if ($.isNumeric(now)) {
-                    $("#quantity").val(parseInt(now) + 1);
-                } else {
-                    $("#quantity").val("1");
-                }
-            });*/
-            $('a').on("click", productDetail());
+            //$('a').on("click", productDetail());
         });
 
         function add(count) {
             var now = $("#quantity").val();
-            if ($.isNumeric(now) && now < count) {
+            if (($.isNumeric(now) && now < count) || count == "infinite") {
                 $("#quantity").val(parseInt(now) + 1);
             } else if (now >= count) {
 
@@ -54,6 +35,11 @@
                 $("#quantity").val("1");
             }
         }
+
+        $(document).ready(function() {
+            var product = getParameterByName("product", window.location.href);
+            productDetail(product);
+        });
     </script>
 </head>
 
@@ -61,7 +47,7 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="product_list.html">Titolo stra figo</a>
+                <a class="navbar-brand" href="product_list.html">Your order</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>

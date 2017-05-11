@@ -74,8 +74,8 @@ function onLoadProductList() {
 function parseItem(data) {
   var $loading = $('#loadingDiv').hide();
   $(document).ajaxStart(function () {
-      $loading.show();
-    })
+    $loading.show();
+  })
     .ajaxStop(function () {
       $loading.hide();
     });
@@ -86,16 +86,19 @@ function parseItem(data) {
     var description = value.description;
     var url = value.skus.url;
     var images = value.images;
-    var count = value.skus.total_count;
+    var product = value.id;
+    var count;
     var skus = value.skus.data;
     var price;
     var sku;
     $.each(skus, function (index, value) {
       price = value["price"];
       sku = value["id"];
+      count = value["inventory"]["type"];
+      //product = value["product"]["id"];
     });
 
-    if (count > 0) {
+    if (count > 0 || count == "infinite") {
       var html = ['<div class="container>',
         '<div class="row" id ="cont">',
         '<div class="col-md-3">',
@@ -112,7 +115,7 @@ function parseItem(data) {
         '<div class="small m-t-xs">' + description + '',
         '</div>',
         '<div class="m-t text-right">',
-        '<a href="product_detail.html?name=' + name + '&image=' + images + '&description=' + description + '&sku=' + sku + '&count=' + count + '&price=' + price + '" onclick="return productDetail()" class="btn btn-xs btn-outline btn-primary">Info</a>',
+        '<input type="button" onclick="window.location.href=\'product_detail.html?product=' + product + '\'" class="btn btn-xs btn-outline btn-primary" value="Info">',
         '</div>',
         '</div>',
         '</div>',
@@ -125,17 +128,26 @@ function parseItem(data) {
       document.getElementsByTagName("body")[0].appendChild(div);
     }
   });
-  //\'' + name + '\', \'' + caption + '\', \'' + description + '\', \'' + shippable + '\', \'' + images + '\'
-  //
 }
 
-function productDetail() {
-  var name = getParameterByName("name", window.location.href);
-  var image = getParameterByName("image", window.location.href);
-  var description = getParameterByName("description", window.location.href);
-  var sku = getParameterByName("sku", window.location.href);
-  var count = getParameterByName("count", window.location.href);
-  var price = getParameterByName("price", window.location.href);
+function productDetail(product) {
+  getProduct(product);
+  var data = localStorage.getItem("data");
+  var prod = JSON.parse(data);
+  var json = JSON.parse(prod);
+  var name = json.name;
+  var image = json.images;
+  var skus = json.skus.data;
+  var description = json.description;
+  var price;
+  var count;
+  var sku;
+  $.each(skus, function(index, value) {
+    price = value.price;
+    sku = value.id;
+    count = value.inventory.type;
+  });
+
   var html = ['<div class="container">',
     '<div class="row">',
     '<div class="col-xs-4 item-photo">',
@@ -173,6 +185,28 @@ function getParameterByName(name, url) {
   if (!results) return null;
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function getProduct(product) {
+  var token = JSON.parse(localStorage.getItem("token"));
+  var auth = token["token"];
+  $.ajax({
+    type: "GET",
+    url: "https://9839f3bb.ngrok.io/products/" + product,
+    async: false,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Authorization", "Bearer " + auth);
+    },
+    success: function (data) {
+      localStorage.setItem("data", JSON.stringify(data));
+    },
+    error: function (xhr) {
+      alert(xhr.status);
+      return false;
+    }
+  });
+
+  return true;
 }
 
 function addToCart(sku) {
