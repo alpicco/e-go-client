@@ -82,31 +82,31 @@
                     <form id="modalForm" method="POST">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="John Smith" />
+                            <input type="text" name="name" class="form-control" id="name" placeholder="John Smith" />
                         </div>
                         <div class="form-group">
                             <label for="phone">Mobile Phone</label>
-                            <input type="text" class="form-control" id="phone" placeholder="Mobile" />
+                            <input type="text" name="phone" class="form-control" id="phone" placeholder="Mobile" />
                         </div>
                         <div class="form-group">
-                            <label for="address-line1">Street</label>
-                            <input id="address-line1" class="form-control" type="text" placeholder="Street">
+                            <label for="line1">Street</label>
+                            <input id="line1" name="line1" class="form-control" type="text" placeholder="Street">
                         </div>
                         <div class="form-group">
                             <label for="city">City / Town</label>
-                            <input id="city" class="form-control" type="text" placeholder="City">
+                            <input id="city" class="form-control" name="city" type="text" placeholder="City">
                         </div>
                         <div class="form-group">
                             <label for="state">State</label>
-                            <input id="region" class="form-control" type="text" placeholder="State">
+                            <input id="region" class="form-control" name="state" type="text" placeholder="State">
                         </div>
                         <div class="form-group">
                             <label for="postal-code">Zip / Postal Code</label>
-                            <input id="postal-code" class="form-control" type="text" placeholder="zip or postal code">
+                            <input id="postal-code" class="form-control" name="zip" type="text" placeholder="zip or postal code">
                         </div>
                         <div class="form-group">
                             <label class="control-label">Country</label>
-                            <select id="country" class="form-control">
+                            <select id="country" name="country" class="form-control">
                             <option value="" selected="selected">(please select a country)</option>
                             <option value="AF">Afghanistan</option>
                             <option value="AL">Albania</option>
@@ -349,7 +349,7 @@
                             <option value="ZW">Zimbabwe</option>
                         </select>
                         </div>
-                        <button onclick="return updateShippingInfos(this)" id="modalSubmit" class="btn btn-default" data-dismiss="modal">Submit</button>
+                        <button onclick="return updateShippingInfos()" id="modalSubmit" class="btn btn-default">Submit</button>
                     </form>
 
 

@@ -142,7 +142,7 @@ function productDetail(product) {
   var price;
   var count;
   var sku;
-  $.each(skus, function(index, value) {
+  $.each(skus, function (index, value) {
     price = value.price;
     sku = value.id;
     count = value.inventory.type;
@@ -242,14 +242,20 @@ function updateShippingInfos(form) {
   var formData = frm.serializeArray();
 
   var myData = {};
+  var address = {};
   $.map(formData, function (obj, i) {
-    myData[obj['name']] = obj['value'];
+    if(obj['name'] == "line1" || obj['name'] == "city" || obj['name'] == "state" || obj['name'] == "zip" || obj['name'] == "country" ) {
+      address[obj['name']] = obj['value'];
+    } else {
+      myData[obj['name']] = obj['value'];
+    }
   });
 
-  myData = JSON.stringify(myData);
-  alert(myData);
+  myData['address'] = address;
 
-  /*$.ajax({
+  myData = JSON.stringify(myData);
+
+  $.ajax({
     type: "POST",
     url: 'https://9839f3bb.ngrok.io/me/shipment',
     async: false,
@@ -260,12 +266,12 @@ function updateShippingInfos(form) {
     },
     data: myData,
     success: function () {
-      alert();
+      alert("Success");
     },
     error: function (xhr) {
       alert(xhr.status);
     }
   });
 
-  return true;*/
+  return true;
 }
