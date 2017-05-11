@@ -13,9 +13,10 @@
         crossorigin="anonymous">
     <script>
         $(document).ready(function () {
-            //$('a').on("click", productDetail());
+            var product = getParameterByName("product", window.location.href);
+            productDetail(product);
         });
-
+        
         function add(count) {
             var now = $("#quantity").val();
             if (($.isNumeric(now) && now < count) || count == "infinite") {
@@ -38,11 +39,6 @@
                 $("#quantity").val("1");
             }
         }
-
-        $(document).ready(function () {
-            var product = getParameterByName("product", window.location.href);
-            productDetail(product);
-        });
     </script>
 </head>
 
@@ -74,6 +70,7 @@
                     <h4 class="modal-title" id="myModalLabel">
                         Shipping Info
                     </h4>
+                    <p>Please, provide your shipping information.</p>
                 </div>
 
                 <!-- Modal Body -->

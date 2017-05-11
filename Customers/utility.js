@@ -1,4 +1,6 @@
-function onSubmitRegister(form) {
+const baseURL = "https://9839f3bb.ngrok.io/";
+
+var onSubmitRegister = function(form) {
   var frm = $("#form");
   var formData = frm.serializeArray();
 
@@ -11,7 +13,7 @@ function onSubmitRegister(form) {
 
   $.ajax({
     type: "POST",
-    url: 'https://9839f3bb.ngrok.io/register',
+    url: baseURL + 'register',
     async: false,
     contentType: "application/json; charset=utf-8",
     dataType: "text",
@@ -33,7 +35,7 @@ function onSubmitLogin() {
   var pass = document.getElementById("pass").value;
   $.ajax({
     type: "POST",
-    url: "https://9839f3bb.ngrok.io/login",
+    url: baseURL + "login",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -56,7 +58,7 @@ function onLoadProductList() {
   var auth = token["token"];
   $.ajax({
     type: "GET",
-    url: "https://9839f3bb.ngrok.io/products",
+    url: baseURL + "products",
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Authorization", "Bearer " + auth);
     },
@@ -110,7 +112,7 @@ function parseItem(data) {
         '<span class="product-price">' + price + '$',
         '</span>',
         '<small class="text-muted">' + caption + '</small>',
-        '<a href="product_detail.html" class="product-name">' + name + '</a>',
+        '<p class="product-name">' + name + '</p>',
 
         '<div class="small m-t-xs">' + description + '',
         '</div>',
@@ -161,8 +163,8 @@ function productDetail(product) {
     '<h6 class="title-attr"><small>QUANTITY</small></h6>',
     '<div>',
     '<div class="btn-minus" onclick="return sub();"><span class="glyphicon glyphicon-minus"></span></div>',
-    '<input id="quantity" value="1" />',
-    '<div class="btn-plus" onclick="return add(' + count + ');"><span class="glyphicon glyphicon-plus"></span></div>',
+    '<input id="quantity" value="1" disabled/>',
+    '<div class="btn-plus" onclick="return add(\'' + count + '\')"><span class="glyphicon glyphicon-plus"></span></div>',
     '</div>',
     '</div>',
     '<p>' + description + '</p>',
@@ -194,7 +196,7 @@ function getProduct(product) {
   var auth = token["token"];
   $.ajax({
     type: "GET",
-    url: "https://9839f3bb.ngrok.io/products/" + product,
+    url: baseURL + "products/" + product,
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Authorization", "Bearer " + auth);
@@ -218,7 +220,7 @@ function addToCart(sku) {
 
   $.ajax({
     type: "POST",
-    url: "https://9839f3bb.ngrok.io/order",
+    url: baseURL + "order",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -226,10 +228,10 @@ function addToCart(sku) {
     },
     data: JSON.stringify(list),
     success: function (data) {
-      alert("added");
+      
     },
     error: function (xhr) {
-      alert(xhr.responseText);
+      $("#myModalNorm").modal('show');
     }
   });
 }
@@ -257,7 +259,7 @@ function updateShippingInfos(form) {
 
   $.ajax({
     type: "POST",
-    url: 'https://9839f3bb.ngrok.io/me/shipment',
+    url: baseURL + 'me/shipment',
     async: false,
     dataType: "text",
     beforeSend: function (xhr) {
@@ -266,7 +268,7 @@ function updateShippingInfos(form) {
     },
     data: myData,
     success: function () {
-      alert("Success");
+      
     },
     error: function (xhr) {
       alert(xhr.responseText);
