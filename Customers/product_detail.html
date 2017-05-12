@@ -15,28 +15,33 @@
         $(document).ready(function () {
             var product = getParameterByName("product", window.location.href);
             productDetail(product);
+
+            $("#confirmAddToCart").on("click", function () {
+                var sku = localStorage.getItem("sku");
+                addToCart(sku);
+            });
         });
-        
+
         function add(count) {
-            var now = $("#quantity").val();
+            var now = document.getElementById("quantity").innerHTML;
             if (($.isNumeric(now) && now < count) || count == "infinite") {
-                $("#quantity").val(parseInt(now) + 1);
+                document.getElementById("quantity").innerHTML = (parseInt(now) + 1);
             } else if (now >= count) {
 
             } else {
-                $("#quantity").val("1");
+                document.getElementById("quantity").innerText = "1";
             }
         }
 
         function sub() {
-            var now = $("#quantity").val();
+            var now = document.getElementById("quantity").innerHTML;
             if ($.isNumeric(now)) {
                 if (parseInt(now) - 1 > 0) {
                     now--;
                 }
-                $("#quantity").val(now);
+                document.getElementById("quantity").innerHTML = now;
             } else {
-                $("#quantity").val("1");
+                document.getElementById("quantity").innerHTML = "1";
             }
         }
     </script>
@@ -70,7 +75,7 @@
                     <h4 class="modal-title" id="myModalLabel">
                         Shipping Info
                     </h4>
-                    <p>Please, provide your shipping information.</p>
+                    <p>Please, provide your shipping details before making an order.</p>
                 </div>
 
                 <!-- Modal Body -->
@@ -361,6 +366,7 @@
             </div>
         </div>
     </div>
+
 </body>
 
 </html>

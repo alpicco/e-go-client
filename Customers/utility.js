@@ -1,6 +1,6 @@
 const baseURL = "https://9839f3bb.ngrok.io/";
 
-var onSubmitRegister = function(form) {
+var onSubmitRegister = function (form) {
   var frm = $("#form");
   var formData = frm.serializeArray();
 
@@ -97,7 +97,6 @@ function parseItem(data) {
       price = value["price"];
       sku = value["id"];
       count = value["inventory"]["type"];
-      //product = value["product"]["id"];
     });
 
     if (count > 0 || count == "infinite") {
@@ -163,7 +162,7 @@ function productDetail(product) {
     '<h6 class="title-attr"><small>QUANTITY</small></h6>',
     '<div>',
     '<div class="btn-minus" onclick="return sub();"><span class="glyphicon glyphicon-minus"></span></div>',
-    '<input id="quantity" value="1" disabled/>',
+    '<div style="height: 20px; width: 50px; text-align: center; border: solid 1px black"><p id="quantity">1</p></div>',
     '<div class="btn-plus" onclick="return add(\'' + count + '\')"><span class="glyphicon glyphicon-plus"></span></div>',
     '</div>',
     '</div>',
@@ -228,10 +227,12 @@ function addToCart(sku) {
     },
     data: JSON.stringify(list),
     success: function (data) {
-      
+      alert("success");
     },
     error: function (xhr) {
-      $("#myModalNorm").modal('show');
+      var json = JSON.parse(xhr.responseText);
+      var message = JSON.parse(json.message);
+        alert(message.message);
     }
   });
 }
@@ -246,7 +247,7 @@ function updateShippingInfos(form) {
   var myData = {};
   var address = {};
   $.map(formData, function (obj, i) {
-    if(obj['name'] == "line1" || obj['name'] == "city" || obj['name'] == "state" || obj['name'] == "zip" || obj['name'] == "country" ) {
+    if (obj['name'] == "line1" || obj['name'] == "city" || obj['name'] == "state" || obj['name'] == "zip" || obj['name'] == "country") {
       address[obj['name']] = obj['value'];
     } else {
       myData[obj['name']] = obj['value'];
@@ -268,7 +269,7 @@ function updateShippingInfos(form) {
     },
     data: myData,
     success: function () {
-      
+      $("#modalAddToCart").modal('show');
     },
     error: function (xhr) {
       alert(xhr.responseText);
