@@ -206,8 +206,9 @@ function getProduct(product) {
       localStorage.setItem("data", JSON.stringify(data));
     },
     error: function (xhr) {
-      alert(xhr.responseText);
-      return false;
+      var json = JSON.parse(xhr.responseText);
+      var message = JSON.parse(json.message);
+      alert(message.message);
     }
   });
 
@@ -331,24 +332,29 @@ function orderList(data) {
 
 function sourceInfo(token) {
   var myData  = {};
-  myData['token'] = token;
-  /*$.ajax({
+  myData['token'] = token.id;
+  alert(JSON.stringify(myData));
+
+  var token = JSON.parse(localStorage.getItem("token"));
+  var auth = token["token"];
+  $.ajax({
     type: "POST",
     url: baseURL + 'me/source',
     async: false,
-    dataType: "text",
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.setRequestHeader("Authorization", "Bearer " + auth);
     },
-    data: JSON.stringify(token),
-    success: function () {
-      
+    data: JSON.stringify(myData),
+    success: function (data) {
+      alert("SUCCESS" + data);
     },
     error: function (xhr) {
-      alert(xhr.responseText);
+      var json = JSON.parse(xhr.responseText);
+      var message = JSON.parse(json.message);
+      alert(message.message);
     }
   });
 
-  return true;*/
+  return true;
 }
