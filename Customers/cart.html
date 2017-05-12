@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your orders</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="js/utility.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/product_list.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <script>
+        $(document).ready(function () {
+            var data = localStorage.getItem("order");
+            data = JSON.parse(JSON.parse(data));
+
+            $("#paymentButton").on("click", function() {
+                window.location.href = "buy.html";
+            });
+
+            return orderList(data);
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="product_list.html">Your order</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="product_list.html"><span class="glyphicon glyphicon-arrow-left"></span> Back to the shop</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <table id="cart" class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th style="width:50%">Product</th>
+                    <th style="width:10%">Price</th>
+                    <th style="width:8%">Quantity</th>
+                    <th style="width:22%" class="text-center">Subtotal</th>
+                    <th style="width:10%"></th>
+                </tr>
+            </thead>
+            <tbody id="products">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" class="hidden-xs"></td>
+                    <td class="hidden-xs" id="total"></td>
+                    <td><button id="paymentButton" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</body>
+
+</html>

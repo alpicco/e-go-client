@@ -108,7 +108,7 @@ function parseItem(data) {
         '<div class="product-imitation" style="background-image: url(' + images + ');background-size: cover;">',
         '</div>',
         '<div class="product-desc">',
-        '<span class="product-price">' + price + '$',
+        '<span class="product-price">' + price + 'eur',
         '</span>',
         '<small class="text-muted">' + caption + '</small>',
         '<p class="product-name">' + name + '</p>',
@@ -157,7 +157,7 @@ function productDetail(product) {
     '<div class="col-xs-5" style="border:0px solid gray">',
     '<h3>' + name + '</h3>',
     '<h6 class="title-price"><small>PRICE</small></h6>',
-    '<h3 id="price" style="margin-top:0px;">$' + price + '</h3>',
+    '<h3 id="price" style="margin-top:0px;">' + price + 'eur</h3>',
     '<div class="section" style="padding-bottom:20px;">',
     '<h6 class="title-attr"><small>QUANTITY</small></h6>',
     '<div>',
@@ -167,10 +167,12 @@ function productDetail(product) {
     '</div>',
     '</div>',
     '<p>' + description + '</p>',
-    '<div class="section" style="padding-bottom:20px;">',
-    '<button onclick="return addToCart(\'' + sku + '\')" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
     '<div style="padding-bottom: 0"></div>',
+    '<p>If this is your first order, please insert your shipping details.</p>',
+    '<div class="section" style="padding-bottom:20px;">',
     '<button type="button" data-toggle="modal" data-target="#myModalNorm" class="btn btn-primary">Shipping info</button>',
+    '<div style="padding-bottom: 0"></div>',
+    '<button onclick="return addToCart(\'' + sku + '\')" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
     '</div>',
     '</div>',
     '</div>',
@@ -227,12 +229,12 @@ function addToCart(sku) {
     },
     data: JSON.stringify(list),
     success: function (data) {
-      alert("success");
+      localStorage.setItem("order", JSON.stringify(data));
     },
     error: function (xhr) {
       var json = JSON.parse(xhr.responseText);
       var message = JSON.parse(json.message);
-        alert(message.message);
+      alert(message.message);
     }
   });
 }
@@ -277,4 +279,76 @@ function updateShippingInfos(form) {
   });
 
   return true;
+}
+
+function orderList(data) {
+  var items = data.items;
+  var amount = 0;
+  var currency;
+  var description;
+  var taxesAndShipping = "";
+  var quantity;
+  var price = 0;
+  $.each(items, function (index, value) {
+    amount = amount + value.amount;
+    if (index == 0) {
+      quantity = value.quantity;
+      description = value.description;
+      currency = value.currency;
+    } else {
+      taxesAndShipping = taxesAndShipping + " " + value.description;
+    }
+
+    if ((index % 2) == 0 && index != 0) {
+      if ($.isNumeric(taxesAndShipping)) {
+        price = price + amount + taxesAndShipping;
+      } else {
+        price = price + amount;
+      }
+
+      var html = ['<td data-th="Product">',
+        '<div class="row">',
+        '<div class="col-sm-10">',
+        '<h4 class="nomargin">' + description + '</h4>',
+        '<p>' + taxesAndShipping + '</p>',
+        '</div>',
+        '</div>',
+        '</td>',
+        '<td data-th="Price">' + amount + currency + '</td>',
+        '<td data-th="Quantity">',
+        '<p>' + quantity + '</p>',
+        '</td>',
+        '<td data-th="Subtotal" class="text-center">' + price + currency + '</td>',
+        '<tr>'].join('');
+      var div = document.createElement('tr');
+      div.innerHTML = html;
+      document.getElementById("products").appendChild(div);
+    }
+  });
+
+  document.getElementById("total").innerHTML = "<strong>Total " + price + currency + "</strong>"
+}
+
+function sourceInfo(token) {
+  var myData  = {};
+  myData['token'] = token;
+  /*$.ajax({
+    type: "POST",
+    url: baseURL + 'me/source',
+    async: false,
+    dataType: "text",
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Authorization", "Bearer " + auth);
+    },
+    data: JSON.stringify(token),
+    success: function () {
+      
+    },
+    error: function (xhr) {
+      alert(xhr.responseText);
+    }
+  });
+
+  return true;*/
 }
