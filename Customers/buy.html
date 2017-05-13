@@ -12,7 +12,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var stripe = Stripe('pk_test_6pRNASCoBOKtIshFeQd4XMUh');
+            var stripe = Stripe('pk_test_nWEUMgBulG1PnR1nuGk6vV4w');
             var elem = stripe.elements();
 
             // Custom styling can be passed to options when creating an Element.
@@ -100,10 +100,10 @@
         </div>
     </nav>
     <div class="page-header" style="text-align: center">
-        <h1>Submit your payment</h1>
+        <h1>Credit card details</h1>
     </div>
 
-    <div class="container">
+    <div id="StripeForm" class="container">
         <form method="post" id="payment-form">
             <div class="form-row">
                 <label for="card-element">
@@ -116,6 +116,7 @@
             <input id="button" type="submit" value="Confirm Credit Card Details"></button>
         </form>
     </div>
+    <div id="json"></div>
 </body>
 
 </html>

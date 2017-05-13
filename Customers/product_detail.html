@@ -15,11 +15,6 @@
         $(document).ready(function () {
             var product = getParameterByName("product", window.location.href);
             productDetail(product);
-
-            $("#confirmAddToCart").on("click", function () {
-                var sku = localStorage.getItem("sku");
-                addToCart(sku);
-            });
         });
 
         function add(count) {

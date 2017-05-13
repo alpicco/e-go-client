@@ -230,6 +230,7 @@ function addToCart(sku) {
     },
     data: JSON.stringify(list),
     success: function (data) {
+      alert("success");
       localStorage.setItem("order", JSON.stringify(data));
     },
     error: function (xhr) {
@@ -331,9 +332,8 @@ function orderList(data) {
 }
 
 function sourceInfo(token) {
-  var myData  = {};
+  var myData = {};
   myData['token'] = token.id;
-  alert(JSON.stringify(myData));
 
   var token = JSON.parse(localStorage.getItem("token"));
   var auth = token["token"];
@@ -347,7 +347,7 @@ function sourceInfo(token) {
     },
     data: JSON.stringify(myData),
     success: function (data) {
-      alert("SUCCESS" + data);
+      replaceElem(data);
     },
     error: function (xhr) {
       var json = JSON.parse(xhr.responseText);
@@ -357,4 +357,28 @@ function sourceInfo(token) {
   });
 
   return true;
+}
+
+function replaceElem(data) {
+  var json = JSON.parse(data);
+  var name = json.shipping.name;
+  var address = json.shipping.address;
+  var street;
+  var city;
+  var state;
+  $.each(address, function (index, value) {
+    street = address.line1;
+    city = address.city;
+    state = address.state;
+  });
+
+  var html = ['<p>The order will be shipped to ' + name + ', ' + street + ', ' + city + ', ' + state + '</p>',
+    '<button id="button" onclick="submitPayment()">Submit Payment</button>'].join('');
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  document.getElementById("json").appendChild(div);
+}
+
+function submitPayment() {
+  alert("hei");
 }
