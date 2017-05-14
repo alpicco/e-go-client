@@ -13,9 +13,10 @@
         $(document).ready(function () {
             var data = localStorage.getItem("order");
             data = JSON.parse(JSON.parse(data));
+            var order = data.id;
 
             $("#paymentButton").on("click", function() {
-                window.location.href = "buy.html";
+                window.location.href = "buy.html?order=" + order;
             });
 
             return orderList(data);

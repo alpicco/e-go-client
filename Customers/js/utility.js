@@ -1,4 +1,5 @@
 const baseURL = "https://9839f3bb.ngrok.io/";
+var orders = "";
 
 var onSubmitRegister = function (form) {
   var frm = $("#form");
@@ -230,7 +231,7 @@ function addToCart(sku) {
     },
     data: JSON.stringify(list),
     success: function (data) {
-      alert("success");
+      orders = JSON.stringify(data);
       localStorage.setItem("order", JSON.stringify(data));
     },
     error: function (xhr) {
@@ -372,13 +373,38 @@ function replaceElem(data) {
     state = address.state;
   });
 
-  var html = ['<p>The order will be shipped to ' + name + ', ' + street + ', ' + city + ', ' + state + '</p>',
-    '<button id="button" onclick="submitPayment()">Submit Payment</button>'].join('');
+  var html = ['<div style="margin: 0 auto"><p>The order will be shipped to <ul><li>' + name + '</li><li>' + street + '</li><li>' + city + '</li><li>' + state + '</li></ul></p></div>',
+    '<input id="button" type="submit" onclick="submitPayment()" value="Submit Payment">'].join('');
   var div = document.createElement('div');
   div.innerHTML = html;
-  document.getElementById("json").appendChild(div);
+  var child = document.getElementById('payment-form');
+  document.getElementById("StripeForm").removeChild(child);
+  document.getElementById("StripeForm").appendChild(div);
 }
 
 function submitPayment() {
-  alert("hei");
+  var order = getParameterByName("order", window.location.href);
+  var token = JSON.parse(localStorage.getItem("token"));
+  var auth = token["token"];
+  var list = [order];
+
+  $.ajax({
+    type: "POST",
+    url: baseURL + "order/pay",
+    async: false,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Authorization", "Bearer " + auth);
+    },
+    data: JSON.stringify(list),
+    success: function (data) {
+      window.location = ("product_list.html");
+      localStorage.removeItem("order");
+    },
+    error: function (xhr) {
+      var json = JSON.parse(xhr.responseText);
+      var message = JSON.parse(json.message);
+      alert(message.message);
+    }
+  });
 }
