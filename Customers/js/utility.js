@@ -23,7 +23,9 @@ var onSubmitRegister = function (form) {
       window.location = ("index.html");
     },
     error: function (xhr) {
-      alert(xhr.responseText);
+      var json = JSON.parse(xhr.responseText);
+      var message = JSON.parse(json.message);
+      alert(message.message);
     }
   });
 
@@ -47,7 +49,9 @@ function onSubmitLogin() {
       window.location = ("product_list.html");
     },
     error: function (xhr) {
-      alert(xhr.responseText);
+      var json = JSON.parse(xhr.responseText);
+      var message = JSON.parse(json.message);
+      alert(message.message);
     }
   });
 
@@ -68,7 +72,8 @@ function onLoadProductList() {
     },
     error: function (xhr) {
       alert(xhr.responseText);
-    }
+    },
+    timeout: 3000
   });
 
   return true;
@@ -169,7 +174,7 @@ function productDetail(product) {
     '</div>',
     '<p>' + description + '</p>',
     '<div style="padding-bottom: 0"></div>',
-    '<p>If this is your first order, please insert your shipping details.</p>',
+    '<p><strong>If this is your first order, please insert your shipping details.</strong></p>',
     '<div class="section" style="padding-bottom:20px;">',
     '<button type="button" data-toggle="modal" data-target="#myModalNorm" class="btn btn-primary">Shipping info</button>',
     '<div style="padding-bottom: 0"></div>',
@@ -210,7 +215,8 @@ function getProduct(product) {
       var json = JSON.parse(xhr.responseText);
       var message = JSON.parse(json.message);
       alert(message.message);
-    }
+    },
+    timeout: 3000
   });
 
   return true;
@@ -232,7 +238,7 @@ function addToCart(sku) {
     data: JSON.stringify(list),
     success: function (data) {
       orders = JSON.stringify(data);
-      localStorage.setItem("order", JSON.stringify(data));
+      localStorage.setItem("order"+auth, orders);
     },
     error: function (xhr) {
       var json = JSON.parse(xhr.responseText);
@@ -380,6 +386,8 @@ function replaceElem(data) {
   var child = document.getElementById('payment-form');
   document.getElementById("StripeForm").removeChild(child);
   document.getElementById("StripeForm").appendChild(div);
+
+  document.getElementById("header").innerHTML = "<h1>Payment</h1>"
 }
 
 function submitPayment() {
@@ -407,4 +415,8 @@ function submitPayment() {
       alert(message.message);
     }
   });
+}
+
+function logOut() {
+  localStorage.removeItem("token");
 }

@@ -14,9 +14,6 @@
         $(document).ready(function () {
             var stripe = Stripe('pk_test_nWEUMgBulG1PnR1nuGk6vV4w');
             var elem = stripe.elements();
-
-            // Custom styling can be passed to options when creating an Element.
-            // (Note that this demo uses a wider set of styles than the guide below.)
             var style = {
                 base: {
                     color: '#32325d',
@@ -29,14 +26,8 @@
                     iconColor: '#fa755a'
                 }
             };
-
-            // Create an instance of the card Element
             var card = elem.create('card', { style: style });
-
-            // Add an instance of the card Element into the `card-element` <div>
             card.mount('#card-element');
-
-            // Handle real-time validation errors from the card Element.
             card.addEventListener('change', function (event) {
                 var displayError = document.getElementById('card-errors');
                 if (event.error) {
@@ -45,12 +36,9 @@
                     displayError.textContent = '';
                 }
             });
-
-            // Handle form submission
             var form = document.getElementById('payment-form');
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
-
                 stripe.createToken(card).then(function (result) {
                     if (result.error) {
                         var errorElement = document.getElementById('card-errors');
@@ -92,14 +80,14 @@
                 <a class="navbar-brand" href="product_list.html">Payment</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="index.html"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+                <li><a href="index.html" onclick="return logOut()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="product_list.html"><span class="glyphicon glyphicon-arrow-left"></span> Back to the shop</a></li>
             </ul>
         </div>
     </nav>
-    <div class="page-header" style="text-align: center">
+    <div class="page-header" id="header" style="text-align: center">
         <h1>Credit card details</h1>
     </div>
 
