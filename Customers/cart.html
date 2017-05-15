@@ -13,13 +13,16 @@
         $(document).ready(function () {
             var token = JSON.parse(localStorage.getItem("token"));
             var auth = token["token"];
-            var data = '[' + localStorage.getItem("order"+auth) + ']';
+            var data = '[' + localStorage.getItem("order" + auth) + ']';
             data = JSON.parse(data);
             //var order = data.id;
 
-            $("#paymentButton").on("click", function () {
-                //window.location.href = "buy.html?order=" + order;
-            });
+            /*$.each(data.items, function (value, index) {
+                var id = value.id;
+                $("#paymentButton"+id).on("click", function () {
+                    window.location.href = "buy.html?order=" + id;
+                });
+            });*/
 
             return orderList(data);
         });
@@ -49,7 +52,7 @@
                     <th style="width:10%">Price</th>
                     <th style="width:8%">Quantity</th>
                     <th style="width:22%" class="text-center">Subtotal</th>
-                    <th style="width:10%"></th>
+                    <th style="width:10%">Pay</th>
                 </tr>
             </thead>
             <tbody id="products">
@@ -58,7 +61,7 @@
                 <tr>
                     <td colspan="2" class="hidden-xs"></td>
                     <td class="hidden-xs" id="total"></td>
-                    <td><button id="paymentButton" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>
+                    <!--<td><button id="paymentButton" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>-->
                 </tr>
             </tfoot>
         </table>

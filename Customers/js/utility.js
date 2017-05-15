@@ -222,11 +222,12 @@ function getProduct(product) {
 function addToCart(sku, quantity) {
   var token = JSON.parse(localStorage.getItem("token"));
   var auth = token["token"];
-  //var myData = {};
-  //myData["sku"] = sku;
-  //myData["quantity"] = parseInt(quantity);
-  //var list = [JSON.stringify(myData)];
-  var list = [sku];
+  var myData = {};
+  myData["sku_id"] = sku;
+  myData["quantity"] = parseInt(quantity);
+  var list = [];
+  list.push(JSON.stringify(myData));
+  //var list = [sku];
 
   $.ajax({
     type: "POST",
@@ -306,6 +307,7 @@ function updateShippingInfos(form) {
 function orderList(data) {
   $.each(data, function (x, v) {
     var items = v.items;
+    var id = v.id;
     var amount = 0;
     var currency;
     var description;
@@ -342,6 +344,7 @@ function orderList(data) {
           '<p>' + quantity + '</p>',
           '</td>',
           '<td data-th="Subtotal" class="text-center">' + price + currency + '</td>',
+          '<td data-th="Pay"><button id="paymentButton'+id+'" onclick="window.location.href = \'buy.html?order=' + id +'\'" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>',
           '<tr>'].join('');
         var div = document.createElement('tr');
         div.innerHTML = html;
@@ -423,7 +426,8 @@ function submitPayment() {
     data: JSON.stringify(list),
     success: function (data) {
       window.location = ("product_list.html");
-      localStorage.removeItem("order");
+      localStorage.removeItem("order"+auth);
+      orders = localStorage.getItem("order" + auth);
     },
     error: function (xhr) {
       var json = JSON.parse(xhr.responseText);
