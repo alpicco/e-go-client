@@ -13,12 +13,12 @@
         $(document).ready(function () {
             var token = JSON.parse(localStorage.getItem("token"));
             var auth = token["token"];
-            var data = localStorage.getItem("order"+auth);
-            data = JSON.parse(JSON.parse(data));
-            var order = data.id;
+            var data = '[' + localStorage.getItem("order"+auth) + ']';
+            data = JSON.parse(data);
+            //var order = data.id;
 
             $("#paymentButton").on("click", function () {
-                window.location.href = "buy.html?order=" + order;
+                //window.location.href = "buy.html?order=" + order;
             });
 
             return orderList(data);

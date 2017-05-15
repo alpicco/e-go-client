@@ -1,5 +1,4 @@
 const baseURL = "https://9839f3bb.ngrok.io/";
-var orders = "";
 
 var onSubmitRegister = function (form) {
   var frm = $("#form");
@@ -73,7 +72,6 @@ function onLoadProductList() {
     error: function (xhr) {
       alert(xhr.responseText);
     },
-    timeout: 3000
   });
 
   return true;
@@ -178,7 +176,7 @@ function productDetail(product) {
     '<div class="section" style="padding-bottom:20px;">',
     '<button type="button" data-toggle="modal" data-target="#myModalNorm" class="btn btn-primary">Shipping info</button>',
     '<div style="padding-bottom: 0"></div>',
-    '<button onclick="return addToCart(\'' + sku + '\')" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
+    '<button onclick="return addToCart(\'' + sku + '\', document.getElementById(\'quantity\').innerHTML)" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
     '</div>',
     '</div>',
     '</div>',
@@ -216,15 +214,18 @@ function getProduct(product) {
       var message = JSON.parse(json.message);
       alert(message.message);
     },
-    timeout: 3000
   });
 
   return true;
 }
 
-function addToCart(sku) {
+function addToCart(sku, quantity) {
   var token = JSON.parse(localStorage.getItem("token"));
   var auth = token["token"];
+  //var myData = {};
+  //myData["sku"] = sku;
+  //myData["quantity"] = parseInt(quantity);
+  //var list = [JSON.stringify(myData)];
   var list = [sku];
 
   $.ajax({
@@ -237,8 +238,20 @@ function addToCart(sku) {
     },
     data: JSON.stringify(list),
     success: function (data) {
-      orders = JSON.stringify(data);
-      localStorage.setItem("order"+auth, orders);
+      var orders = [];
+      orders.push(data);
+      if (localStorage.getItem("order" + auth) != null) {
+        var json = localStorage.getItem("order" + auth);
+        orders.push(json);
+      }  
+
+      //orders[0].slice(0, -1); 
+      //orders[0].slice(0, 1);   
+      //if (localStorage.getItem("order" + auth) != null) {
+      //  localStorage.setItem("order" + auth, orders);
+      //} else {
+        localStorage.setItem("order" + auth, orders);
+      //}
     },
     error: function (xhr) {
       var json = JSON.parse(xhr.responseText);
@@ -291,49 +304,52 @@ function updateShippingInfos(form) {
 }
 
 function orderList(data) {
-  var items = data.items;
-  var amount = 0;
-  var currency;
-  var description;
-  var taxesAndShipping = "";
-  var quantity;
-  var price = 0;
-  $.each(items, function (index, value) {
-    amount = amount + value.amount;
-    if (index == 0) {
-      quantity = value.quantity;
-      description = value.description;
-      currency = value.currency;
-    } else {
-      taxesAndShipping = taxesAndShipping + " " + value.description;
-    }
-
-    if ((index % 2) == 0 && index != 0) {
-      if ($.isNumeric(taxesAndShipping)) {
-        price = price + amount + taxesAndShipping;
+  $.each(data, function (x, v) {
+    var items = v.items;
+    var amount = 0;
+    var currency;
+    var description;
+    var taxesAndShipping = "";
+    var quantity;
+    var price = 0;
+    $.each(items, function (index, value) {
+      amount = amount + value.amount;
+      if (index == 0) {
+        quantity = value.quantity;
+        description = value.description;
+        currency = value.currency;
       } else {
-        price = price + amount;
+        taxesAndShipping = taxesAndShipping + " " + value.description;
       }
 
-      var html = ['<td data-th="Product">',
-        '<div class="row">',
-        '<div class="col-sm-10">',
-        '<h4 class="nomargin">' + description + '</h4>',
-        '<p>' + taxesAndShipping + '</p>',
-        '</div>',
-        '</div>',
-        '</td>',
-        '<td data-th="Price">' + amount + currency + '</td>',
-        '<td data-th="Quantity">',
-        '<p>' + quantity + '</p>',
-        '</td>',
-        '<td data-th="Subtotal" class="text-center">' + price + currency + '</td>',
-        '<tr>'].join('');
-      var div = document.createElement('tr');
-      div.innerHTML = html;
-      document.getElementById("products").appendChild(div);
-    }
+      if ((index % 2) == 0 && index != 0) {
+        if ($.isNumeric(taxesAndShipping)) {
+          price = price + amount + taxesAndShipping;
+        } else {
+          price = price + amount;
+        }
+
+        var html = ['<td data-th="Product">',
+          '<div class="row">',
+          '<div class="col-sm-10">',
+          '<h4 class="nomargin">' + description + '</h4>',
+          '<p>' + taxesAndShipping + '</p>',
+          '</div>',
+          '</div>',
+          '</td>',
+          '<td data-th="Price">' + amount + currency + '</td>',
+          '<td data-th="Quantity">',
+          '<p>' + quantity + '</p>',
+          '</td>',
+          '<td data-th="Subtotal" class="text-center">' + price + currency + '</td>',
+          '<tr>'].join('');
+        var div = document.createElement('tr');
+        div.innerHTML = html;
+        document.getElementById("products").appendChild(div);
+      }
+    });
   });
+
 
   document.getElementById("total").innerHTML = "<strong>Total " + price + currency + "</strong>"
 }
