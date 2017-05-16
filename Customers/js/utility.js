@@ -225,8 +225,7 @@ function addToCart(sku, quantity) {
   var myData = {};
   myData["sku_id"] = sku;
   myData["quantity"] = parseInt(quantity);
-  var list = [];
-  list.push(JSON.stringify(myData));
+  var list = [myData];
   //var list = [sku];
 
   $.ajax({
