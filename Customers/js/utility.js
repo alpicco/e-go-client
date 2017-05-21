@@ -1,4 +1,4 @@
-const baseURL = "https://9839f3bb.ngrok.io/";
+const baseURL = "https://decatech.me:3000/";
 
 var onSubmitRegister = function (form) {
   var frm = $("#form");
