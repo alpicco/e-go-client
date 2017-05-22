@@ -1,4 +1,4 @@
-const baseURL = "https://decatech.me:3000/";
+const baseURL = "/";
 
 var onSubmitRegister = function (form) {
   var frm = $("#form");
@@ -31,7 +31,6 @@ var onSubmitRegister = function (form) {
   return true;
 }
 
-
 function onSubmitLogin() {
   var user = document.getElementById("user").value;
   var pass = document.getElementById("pass").value;
@@ -48,9 +47,10 @@ function onSubmitLogin() {
       window.location = ("product_list.html");
     },
     error: function (xhr) {
-      var json = JSON.parse(xhr.responseText);
-      var message = JSON.parse(json.message);
-      alert(message.message);
+      alert("error");
+      //var json = JSON.parse(xhr.responseText);
+      //var message = JSON.parse(json.message);
+      //alert(message.message);
     }
   });
 
@@ -70,7 +70,7 @@ function onLoadProductList() {
       parseItem(data);
     },
     error: function (xhr) {
-      alert(xhr.responseText);
+      //alert(xhr.responseText);
     },
   });
 
