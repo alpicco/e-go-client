@@ -11,25 +11,15 @@
 
     <script>
         $(document).ready(function () {
-            var token = JSON.parse(localStorage.getItem("token"));
-            var auth = token["token"];
-            var data = '[' + localStorage.getItem("order" + auth) + ']';
-            data = JSON.parse(data);
-            //var order = data.id;
-
-            /*$.each(data.items, function (value, index) {
-                var id = value.id;
-                $("#paymentButton"+id).on("click", function () {
-                    window.location.href = "buy.html?order=" + id;
-                });
-            });*/
-
-            return orderList(data);
+            var list = returnOrderList();
+            $('#paymentButton').on("click", function() {
+                window.location.href = ("buy.html?order="+list);
+            });
         });
     </script>
 </head>
 
-<body>
+<body onload="return onLoadOrderList()">
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -48,20 +38,22 @@
         <table id="cart" class="table table-hover table-condensed">
             <thead>
                 <tr>
-                    <th style="width:50%">Product</th>
+                    <th style="width:5%">Select</th>
+                    <th style="width:45%">Product</th>
                     <th style="width:10%">Price</th>
                     <th style="width:8%">Quantity</th>
                     <th style="width:22%" class="text-center">Subtotal</th>
-                    <th style="width:10%">Pay</th>
+                    <th style="width:5%">Pay</th>
+                    <th style="width:5%">Cancel</th>
                 </tr>
             </thead>
             <tbody id="products">
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="2" class="hidden-xs"></td>
-                    <td class="hidden-xs" id="total"></td>
-                    <!--<td><button id="paymentButton" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>-->
+                    <td colspan="4"></td>
+                    <td style="text-align: center"id="total"></td>
+                    <td colspan="2" data-th="Pay"><button id="paymentButton" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>
                 </tr>
             </tfoot>
         </table>

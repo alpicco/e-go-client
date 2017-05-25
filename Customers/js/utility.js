@@ -1,4 +1,5 @@
-const baseURL = "/";
+const baseURL = "https://decatech.me:3000/";
+var myOrderList = [];
 
 var onSubmitRegister = function (form) {
   var frm = $("#form");
@@ -58,14 +59,9 @@ function onSubmitLogin() {
 }
 
 function onLoadProductList() {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
   $.ajax({
     type: "GET",
     url: baseURL + "products",
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("Authorization", "Bearer " + auth);
-    },
     success: function (data) {
       parseItem(data);
     },
@@ -112,7 +108,7 @@ function parseItem(data) {
         '<div class="product-imitation" style="background-image: url(' + images + ');background-size: cover;">',
         '</div>',
         '<div class="product-desc">',
-        '<span class="product-price">' + price + 'eur',
+        '<span class="product-price">' + (price/100) + 'eur',
         '</span>',
         '<small class="text-muted">' + caption + '</small>',
         '<p class="product-name">' + name + '</p>',
@@ -161,7 +157,7 @@ function productDetail(product) {
     '<div class="col-xs-5" style="border:0px solid gray">',
     '<h3>' + name + '</h3>',
     '<h6 class="title-price"><small>PRICE</small></h6>',
-    '<h3 id="price" style="margin-top:0px;">' + price + 'eur</h3>',
+    '<h3 id="price" style="margin-top:0px;">' + (price/100) + 'eur</h3>',
     '<div class="section" style="padding-bottom:20px;">',
     '<h6 class="title-attr"><small>QUANTITY</small></h6>',
     '<div>',
@@ -220,8 +216,12 @@ function getProduct(product) {
 }
 
 function addToCart(sku, quantity) {
+  if(localStorage.getItem("token") != null) {
   var token = JSON.parse(localStorage.getItem("token"));
   var auth = token["token"];
+  } else {
+  window.location.href = ("index.html");
+  }
   var myData = {};
   myData["sku_id"] = sku;
   myData["quantity"] = parseInt(quantity);
@@ -243,10 +243,10 @@ function addToCart(sku, quantity) {
       if (localStorage.getItem("order" + auth) != null) {
         var json = localStorage.getItem("order" + auth);
         orders.push(json);
-      }  
+      }
 
-      //orders[0].slice(0, -1); 
-      //orders[0].slice(0, 1);   
+      //orders[0].slice(0, -1);
+      //orders[0].slice(0, 1);
       //if (localStorage.getItem("order" + auth) != null) {
       //  localStorage.setItem("order" + auth, orders);
       //} else {
@@ -254,6 +254,9 @@ function addToCart(sku, quantity) {
       //}
     },
     error: function (xhr) {
+     if(xhr.status == 401) {
+        window.location = ("index.html");
+     }
       var json = JSON.parse(xhr.responseText);
       var message = JSON.parse(json.message);
       alert(message.message);
@@ -304,9 +307,11 @@ function updateShippingInfos(form) {
 }
 
 function orderList(data) {
+  var totalPrice = 0;
   $.each(data, function (x, v) {
     var items = v.items;
     var id = v.id;
+    myOrderList.push(id);
     var amount = 0;
     var currency;
     var description;
@@ -330,7 +335,9 @@ function orderList(data) {
           price = price + amount;
         }
 
-        var html = ['<td data-th="Product">',
+        totalPrice += price;
+
+        var html = ['<td data-th="Select"><input type="checkbox" name="\''+id+'\'"/></td>','<td data-th="Product">',
           '<div class="row">',
           '<div class="col-sm-10">',
           '<h4 class="nomargin">' + description + '</h4>',
@@ -338,12 +345,13 @@ function orderList(data) {
           '</div>',
           '</div>',
           '</td>',
-          '<td data-th="Price">' + amount + currency + '</td>',
+          '<td data-th="Price">' + (amount/100) + currency + '</td>',
           '<td data-th="Quantity">',
           '<p>' + quantity + '</p>',
           '</td>',
-          '<td data-th="Subtotal" class="text-center">' + price + currency + '</td>',
+          '<td data-th="Subtotal" class="text-center">' + (price/100) + currency + '</td>',
           '<td data-th="Pay"><button id="paymentButton'+id+'" onclick="window.location.href = \'buy.html?order=' + id +'\'" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>',
+          '<td data-th="Cancel"><button id="cancelButton'+id+'" onclick="return cancelOrder(\''+id+'\')" class="btn btn-danger btn-block">Cancel<i class="fa fa-angle-right"></i></a></td>',
           '<tr>'].join('');
         var div = document.createElement('tr');
         div.innerHTML = html;
@@ -353,7 +361,7 @@ function orderList(data) {
   });
 
 
-  document.getElementById("total").innerHTML = "<strong>Total " + price + currency + "</strong>"
+  document.getElementById("total").innerHTML = "<strong>Total " + (totalPrice/100) + "eur</strong>"
 }
 
 function sourceInfo(token) {
@@ -409,14 +417,18 @@ function replaceElem(data) {
 }
 
 function submitPayment() {
-  var order = getParameterByName("order", window.location.href);
+  if(localStorage.getItem("token") != null) {
   var token = JSON.parse(localStorage.getItem("token"));
   var auth = token["token"];
+  } else {
+  window.location.href = ("index.html");
+  }
+  var order = getParameterByName("order", window.location.href);
   var list = [order];
 
   $.ajax({
     type: "POST",
-    url: baseURL + "order/pay",
+    url: baseURL + "orders/pay",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -436,6 +448,64 @@ function submitPayment() {
   });
 }
 
+function cancelOrder(id) {
+  if(localStorage.getItem("token") != null) {
+  var token = JSON.parse(localStorage.getItem("token"));
+  var auth = token["token"];
+  } else {
+  window.location.href = ("index.html");
+  }
+  var list = [id];
+
+  $.ajax({
+    type: "POST",
+    url: baseURL + "orders/cancel",
+    async: false,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Authorization", "Bearer " + auth);
+    },
+    data: JSON.stringify(list),
+    success: function (data) {
+      onLoadOrderList();
+    },
+    error: function (xhr) {
+      var json = JSON.parse(xhr.responseText);
+      var message = JSON.parse(json.message);
+      alert(message.message);
+    }
+  });
+}
+
+
 function logOut() {
   localStorage.removeItem("token");
+}
+
+function onLoadOrderList() {
+  if(localStorage.getItem("token") != null) {
+  var token = JSON.parse(localStorage.getItem("token"));
+  var auth = token["token"];
+  } else {
+  window.location.href = ("index.html");
+  }
+  $.ajax({
+    type: "GET",
+    url: baseURL + "me/orders",
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Authorization", "Bearer " + auth);
+    },
+    success: function (data) {
+      orderList(JSON.parse(data));
+    },
+    error: function (xhr) {
+      //alert(xhr.responseText);
+    },
+  });
+
+  return true;
+}
+
+function returnOrderList() {
+        return myOrderList;
 }
