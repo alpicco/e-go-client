@@ -66,6 +66,10 @@ function onLoadProductList() {
       parseItem(data);
     },
     error: function (xhr) {
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      }
       //alert(xhr.responseText);
     },
   });
@@ -108,7 +112,7 @@ function parseItem(data) {
         '<div class="product-imitation" style="background-image: url(' + images + ');background-size: cover;">',
         '</div>',
         '<div class="product-desc">',
-        '<span class="product-price">' + (price/100) + 'eur',
+        '<span class="product-price">' + (price / 100) + 'eur',
         '</span>',
         '<small class="text-muted">' + caption + '</small>',
         '<p class="product-name">' + name + '</p>',
@@ -157,7 +161,7 @@ function productDetail(product) {
     '<div class="col-xs-5" style="border:0px solid gray">',
     '<h3>' + name + '</h3>',
     '<h6 class="title-price"><small>PRICE</small></h6>',
-    '<h3 id="price" style="margin-top:0px;">' + (price/100) + 'eur</h3>',
+    '<h3 id="price" style="margin-top:0px;">' + (price / 100) + 'eur</h3>',
     '<div class="section" style="padding-bottom:20px;">',
     '<h6 class="title-attr"><small>QUANTITY</small></h6>',
     '<div>',
@@ -206,9 +210,14 @@ function getProduct(product) {
       localStorage.setItem("data", JSON.stringify(data));
     },
     error: function (xhr) {
-      var json = JSON.parse(xhr.responseText);
-      var message = JSON.parse(json.message);
-      alert(message.message);
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      } else {
+        var json = JSON.parse(xhr.responseText);
+        var message = JSON.parse(json.message);
+        alert(message.message);
+      }
     },
   });
 
@@ -216,17 +225,16 @@ function getProduct(product) {
 }
 
 function addToCart(sku, quantity) {
-  if(localStorage.getItem("token") != null) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
   } else {
-  window.location.href = ("index.html");
+    window.location.href = ("index.html");
   }
   var myData = {};
   myData["sku_id"] = sku;
   myData["quantity"] = parseInt(quantity);
   var list = [myData];
-  //var list = [sku];
 
   $.ajax({
     type: "POST",
@@ -238,28 +246,16 @@ function addToCart(sku, quantity) {
     },
     data: JSON.stringify(list),
     success: function (data) {
-      var orders = [];
-      orders.push(data);
-      if (localStorage.getItem("order" + auth) != null) {
-        var json = localStorage.getItem("order" + auth);
-        orders.push(json);
-      }
-
-      //orders[0].slice(0, -1);
-      //orders[0].slice(0, 1);
-      //if (localStorage.getItem("order" + auth) != null) {
-      //  localStorage.setItem("order" + auth, orders);
-      //} else {
-        localStorage.setItem("order" + auth, orders);
-      //}
     },
     error: function (xhr) {
-     if(xhr.status == 401) {
-        window.location = ("index.html");
-     }
-      var json = JSON.parse(xhr.responseText);
-      var message = JSON.parse(json.message);
-      alert(message.message);
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      } else {
+        var json = JSON.parse(xhr.responseText);
+        var message = JSON.parse(json.message);
+        alert(message.message);
+      }
     }
   });
 }
@@ -299,7 +295,12 @@ function updateShippingInfos(form) {
       $("#modalAddToCart").modal('show');
     },
     error: function (xhr) {
-      alert(xhr.responseText);
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      } else {
+        alert(xhr.responseText);
+      }
     }
   });
 
@@ -317,6 +318,7 @@ function orderList(data) {
     var description;
     var taxesAndShipping = "";
     var quantity;
+    var status = v.status;
     var price = 0;
     $.each(items, function (index, value) {
       amount = amount + value.amount;
@@ -328,40 +330,44 @@ function orderList(data) {
         taxesAndShipping = taxesAndShipping + " " + value.description;
       }
 
-      if ((index % 2) == 0 && index != 0) {
-        if ($.isNumeric(taxesAndShipping)) {
-          price = price + amount + taxesAndShipping;
-        } else {
-          price = price + amount;
-        }
+      if (status != "canceled" && status != "paid") {
 
-        totalPrice += price;
+        if ((index % 2) == 0 && index != 0) {
+          if ($.isNumeric(taxesAndShipping)) {
+            price = price + amount + taxesAndShipping;
+          } else {
+            price = price + amount;
+          }
 
-        var html = ['<td data-th="Select"><input type="checkbox" name="\''+id+'\'"/></td>','<td data-th="Product">',
-          '<div class="row">',
-          '<div class="col-sm-10">',
+          totalPrice += price;
+
+          var html = ['<td data-th="Select"><input type="checkbox" name="\'' + id + '\'"/></td>', '<td data-th="Product">',
+            '<div class="row">',
+            '<div class="col-sm-10">',
           '<h4 class="nomargin">' + description + '</h4>',
           '<p>' + taxesAndShipping + '</p>',
-          '</div>',
-          '</div>',
-          '</td>',
-          '<td data-th="Price">' + (amount/100) + currency + '</td>',
-          '<td data-th="Quantity">',
+            '</div>',
+            '</div>',
+            '</td>',
+          '<td data-th="Price">' + (amount / 100) + currency + '</td>',
+            '<td data-th="Quantity">',
           '<p>' + quantity + '</p>',
-          '</td>',
-          '<td data-th="Subtotal" class="text-center">' + (price/100) + currency + '</td>',
-          '<td data-th="Pay"><button id="paymentButton'+id+'" onclick="window.location.href = \'buy.html?order=' + id +'\'" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>',
-          '<td data-th="Cancel"><button id="cancelButton'+id+'" onclick="return cancelOrder(\''+id+'\')" class="btn btn-danger btn-block">Cancel<i class="fa fa-angle-right"></i></a></td>',
-          '<tr>'].join('');
-        var div = document.createElement('tr');
-        div.innerHTML = html;
-        document.getElementById("products").appendChild(div);
+            '</td>',
+          '<td data-th="Subtotal" class="text-center">' + (price / 100) + currency + '</td>',
+          '<td data-th="Pay"><button id="paymentButton' + id + '" onclick="window.location.href = \'buy.html?order=' + id + '\'" class="btn btn-primary btn-block">Pay<i class="fa fa-angle-right"></i></a></td>',
+          '<td data-th="Cancel"><button id="cancelButton' + id + '" onclick="return cancelOrder(\'' + id + '\')" class="btn btn-danger btn-block">Cancel<i class="fa fa-angle-right"></i></a></td>',
+            '<tr>'].join('');
+          var div = document.createElement('tr');
+          div.innerHTML = html;
+          document.getElementById("products").appendChild(div);
+        }
       }
     });
+
   });
 
 
-  document.getElementById("total").innerHTML = "<strong>Total " + (totalPrice/100) + "eur</strong>"
+  document.getElementById("total").innerHTML = "<strong>Total " + (totalPrice / 100) + "eur</strong>"
 }
 
 function sourceInfo(token) {
@@ -383,9 +389,14 @@ function sourceInfo(token) {
       replaceElem(data);
     },
     error: function (xhr) {
-      var json = JSON.parse(xhr.responseText);
-      var message = JSON.parse(json.message);
-      alert(message.message);
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      } else {
+        var json = JSON.parse(xhr.responseText);
+        var message = JSON.parse(json.message);
+        alert(message.message);
+      }
     }
   });
 
@@ -417,18 +428,18 @@ function replaceElem(data) {
 }
 
 function submitPayment() {
-  if(localStorage.getItem("token") != null) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
   } else {
-  window.location.href = ("index.html");
+    window.location.href = ("index.html");
   }
   var order = getParameterByName("order", window.location.href);
   var list = [order];
 
   $.ajax({
     type: "POST",
-    url: baseURL + "orders/pay",
+    url: baseURL + "order/pay",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -437,29 +448,32 @@ function submitPayment() {
     data: JSON.stringify(list),
     success: function (data) {
       window.location = ("product_list.html");
-      localStorage.removeItem("order"+auth);
-      orders = localStorage.getItem("order" + auth);
     },
     error: function (xhr) {
-      var json = JSON.parse(xhr.responseText);
-      var message = JSON.parse(json.message);
-      alert(message.message);
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      } else {
+        var json = JSON.parse(xhr.responseText);
+        var message = JSON.parse(json.message);
+        alert(message.message);
+      }
     }
   });
 }
 
 function cancelOrder(id) {
-  if(localStorage.getItem("token") != null) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
   } else {
-  window.location.href = ("index.html");
+    window.location.href = ("index.html");
   }
   var list = [id];
 
   $.ajax({
     type: "POST",
-    url: baseURL + "orders/cancel",
+    url: baseURL + "order/cancel",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -467,12 +481,17 @@ function cancelOrder(id) {
     },
     data: JSON.stringify(list),
     success: function (data) {
-      onLoadOrderList();
+      location.reload();
     },
     error: function (xhr) {
-      var json = JSON.parse(xhr.responseText);
-      var message = JSON.parse(json.message);
-      alert(message.message);
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      } else {
+        var json = JSON.parse(xhr.responseText);
+        var message = JSON.parse(json.message);
+        alert(message.message);
+      }
     }
   });
 }
@@ -483,11 +502,11 @@ function logOut() {
 }
 
 function onLoadOrderList() {
-  if(localStorage.getItem("token") != null) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
   } else {
-  window.location.href = ("index.html");
+    window.location.href = ("index.html");
   }
   $.ajax({
     type: "GET",
@@ -499,6 +518,10 @@ function onLoadOrderList() {
       orderList(JSON.parse(data));
     },
     error: function (xhr) {
+      if (xhr.status == 401) {
+        loadLoginModal();
+        $('#myModalNorm').modal('show');
+      }
       //alert(xhr.responseText);
     },
   });
@@ -507,5 +530,46 @@ function onLoadOrderList() {
 }
 
 function returnOrderList() {
-        return myOrderList;
+  return myOrderList;
+}
+
+function loadLoginModal() {
+
+  var html = ['<div class="modal fade" id="myModalNorm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">',
+    '<div class="modal-dialog">',
+    '<div class="modal-content">',
+    '<div class="modal-header">',
+    '<button type="button" class="close" data-dismiss="modal">',
+    '<span aria-hidden="true">&times;</span>',
+    '<span class="sr-only">Close</span>',
+    '</button>',
+    '<h4 class="modal-title" id="myModalLabel">',
+    'Login to your account',
+    '</h4>',
+    '</div>',
+    '<div class="modal-body">',
+    '<form id="modalForm" method="POST">',
+    '<div class="form-group">',
+    '<label for="name">Name</label>',
+    '<input type="text" name="user" class="form-control" id="user" placeholder="foo@bar.com" />',
+    '</div>',
+    '<div class="form-group">',
+    '<label for="password">Password</label>',
+    '<input type="password" name="pass" class="form-control" id="pass" placeholder="Password" />',
+    '</div>',
+    '<button onclick="return onSubmitLogin()" id="modalSubmit" class="btn btn-default">Submit</button>',
+    '</form>',
+    '</div>',
+    '<div class="modal-footer">',
+    '<button type="button" class="btn btn-danger" data-dismiss="modal">',
+    'Exit',
+    '</button>',
+    '</div>',
+    '</div>',
+    '</div>',
+    '</div>'].join('');
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  document.getElementsByTagName("body")[0].appendChild(div);
+
 }
