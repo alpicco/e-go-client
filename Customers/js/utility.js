@@ -1,4 +1,4 @@
-const baseURL = "https://decatech.me:3000/";
+const baseURL = "/";
 var myOrderList = [];
 
 var onSubmitRegister = function (form) {
