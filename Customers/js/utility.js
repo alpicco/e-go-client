@@ -174,7 +174,7 @@ function productDetail(product) {
     '<div style="padding-bottom: 0"></div>',
     '<p><strong>If this is your first order, please insert your shipping details.</strong></p>',
     '<div class="section" style="padding-bottom:20px;">',
-    '<button type="button" data-toggle="modal" data-target="#myModalNorm" class="btn btn-primary">Shipping info</button>',
+    '<button type="button" data-toggle="modal" data-target="#myModalNormShipping" class="btn btn-primary">Shipping info</button>',
     '<div style="padding-bottom: 0"></div>',
     '<button onclick="return addToCart(\'' + sku + '\', document.getElementById(\'quantity\').innerHTML)" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
     '</div>',
@@ -197,15 +197,10 @@ function getParameterByName(name, url) {
 }
 
 function getProduct(product) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
   $.ajax({
     type: "GET",
     url: baseURL + "products/" + product,
     async: false,
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("Authorization", "Bearer " + auth);
-    },
     success: function (data) {
       localStorage.setItem("data", JSON.stringify(data));
     },
@@ -229,7 +224,8 @@ function addToCart(sku, quantity) {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
   var myData = {};
   myData["sku_id"] = sku;
@@ -238,7 +234,7 @@ function addToCart(sku, quantity) {
 
   $.ajax({
     type: "POST",
-    url: baseURL + "order",
+    url: baseURL + "orders",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -261,8 +257,13 @@ function addToCart(sku, quantity) {
 }
 
 function updateShippingInfos(form) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
+  } else {
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
+  }
 
   var frm = $("#modalForm");
   var formData = frm.serializeArray();
@@ -312,7 +313,6 @@ function orderList(data) {
   $.each(data, function (x, v) {
     var items = v.items;
     var id = v.id;
-    myOrderList.push(id);
     var amount = 0;
     var currency;
     var description;
@@ -332,6 +332,9 @@ function orderList(data) {
 
       if (status != "canceled" && status != "paid") {
 
+        if (!myOrderList.includes(id)) {
+          myOrderList.push(id);
+        }
         if ((index % 2) == 0 && index != 0) {
           if ($.isNumeric(taxesAndShipping)) {
             price = price + amount + taxesAndShipping;
@@ -374,8 +377,13 @@ function sourceInfo(token) {
   var myData = {};
   myData['token'] = token.id;
 
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
+  } else {
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
+  }
   $.ajax({
     type: "POST",
     url: baseURL + 'me/source',
@@ -432,20 +440,22 @@ function submitPayment() {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
-  var order = getParameterByName("order", window.location.href);
-  var list = [order];
+  //var order = getParameterByName("order", window.location.href);
+  //var list = [order];
+  var arr = document.URL.match(/or_[0-9a-zA-Z]*/g);
 
   $.ajax({
     type: "POST",
-    url: baseURL + "order/pay",
+    url: baseURL + "orders/pay",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.setRequestHeader("Authorization", "Bearer " + auth);
     },
-    data: JSON.stringify(list),
+    data: JSON.stringify(arr),
     success: function (data) {
       window.location = ("product_list.html");
     },
@@ -467,13 +477,14 @@ function cancelOrder(id) {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
   var list = [id];
 
   $.ajax({
     type: "POST",
-    url: baseURL + "order/cancel",
+    url: baseURL + "orders/cancel",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -506,7 +517,8 @@ function onLoadOrderList() {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
   $.ajax({
     type: "GET",
