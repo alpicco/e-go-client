@@ -12,7 +12,6 @@ var onSubmitRegister = function (form) {
   myData['password'] = password;
 
   myData = JSON.stringify(myData);
-  alert(myData);
 
   $.ajax({
     type: "POST",
@@ -47,7 +46,7 @@ function onSubmitLogin() {
     },
     success: function (data) {
       localStorage.setItem("token", data);
-      window.location = ("product_list.html");
+      window.location.reload;
     },
     error: function (xhr) {
       alert("error");
