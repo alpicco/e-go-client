@@ -15,6 +15,14 @@
         $(document).ready(function () {
             var product = getParameterByName("product", window.location.href);
             productDetail(product);
+
+            if (localStorage.getItem("token") == null) {
+                $("#login").attr("class", "show");
+                $("#logout").attr("class", "hide");
+            } else {
+                $("#login").attr("class", "hide");
+                $("#logout").attr("class", "show");
+            }
         });
 
         function add(count) {
@@ -49,7 +57,8 @@
                 <a class="navbar-brand" href="product_list.html">Your order</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="" onclick="return logOut()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+                <li id="logout"><a href="" onclick="return logOut()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+                <li class="hide" id="login"><a onclick="return logIn()"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="product_list.html"><span class="glyphicon glyphicon-arrow-left"></span> Back to the shop</a></li>

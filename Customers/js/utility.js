@@ -2,15 +2,17 @@ const baseURL = "/";
 var myOrderList = [];
 
 var onSubmitRegister = function (form) {
-  var frm = $("#form");
-  var formData = frm.serializeArray();
-
   var myData = {};
-  $.map(formData, function (obj, i) {
-    myData[obj['name']] = obj['value'];
-  });
+
+  var name = document.getElementById("name").value;
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("password").value;
+  myData['name'] = name;
+  myData['email'] = email;
+  myData['password'] = password;
 
   myData = JSON.stringify(myData);
+  alert(myData);
 
   $.ajax({
     type: "POST",
@@ -20,7 +22,7 @@ var onSubmitRegister = function (form) {
     dataType: "text",
     data: myData,
     success: function () {
-      window.location = ("index.html");
+      logIn();
     },
     error: function (xhr) {
       var json = JSON.parse(xhr.responseText);
@@ -247,6 +249,8 @@ function addToCart(sku, quantity) {
       if (xhr.status == 401) {
         loadLoginModal();
         $('#myModalNorm').modal('show');
+      } else if(xhr.status == 500) {
+        $('#myModalNormShipping').modal('show');
       } else {
         var json = JSON.parse(xhr.responseText);
         var message = JSON.parse(json.message);
@@ -443,8 +447,6 @@ function submitPayment() {
     loadLoginModal();
     $('#myModalNorm').modal('show');
   }
-  //var order = getParameterByName("order", window.location.href);
-  //var list = [order];
   var arr = document.URL.match(/or_[0-9a-zA-Z]*/g);
 
   $.ajax({
@@ -559,7 +561,7 @@ function loadLoginModal() {
     'Login to your account',
     '</h4>',
     '</div>',
-    '<div class="modal-body">',
+    '<div class="modal-body" id="modal-body>',
     '<form id="modalForm" method="POST">',
     '<div class="form-group">',
     '<label for="name">Name</label>',
@@ -573,6 +575,9 @@ function loadLoginModal() {
     '</form>',
     '</div>',
     '<div class="modal-footer">',
+    '<button type="button" class="btn btn-primary" onclick="return replaceModal()">',
+    'Register',
+    '</button>',
     '<button type="button" class="btn btn-danger" data-dismiss="modal">',
     'Exit',
     '</button>',
@@ -584,4 +589,58 @@ function loadLoginModal() {
   div.innerHTML = html;
   document.getElementsByTagName("body")[0].appendChild(div);
 
+}
+
+function logIn() {
+  $('#myModalNormRegister').modal('hide');
+  loadLoginModal();
+  $('#myModalNorm').modal('show');
+}
+
+function replaceModal() {
+  $('#myModalNorm').modal('hide');
+  var html = ['<div class="modal fade" id="myModalNormRegister" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">',
+    '<div class="modal-dialog">',
+    '<div class="modal-content">',
+    '<div class="modal-header">',
+    '<button type="button" class="close" data-dismiss="modal">',
+    '<span aria-hidden="true">&times;</span>',
+    '<span class="sr-only">Close</span>',
+    '</button>',
+    '<h4 class="modal-title" id="myModalLabel">',
+    'Create an account',
+    '</h4>',
+    '</div>',
+    '<div class="modal-body" id="modal-body>',
+    '<form id="modalFormRegister" method="POST">',
+    '<div class="form-group">',
+    '<label for="name">Name</label>',
+    '<input type="text" name="name" class="form-control" id="name" placeholder="John Smith" />',
+    '</div>',
+    '<div class="form-group">',
+    '<label for="name">User name</label>',
+    '<input type="text" name="email" class="form-control" id="email" placeholder="john@smith.com" />',
+    '</div>',
+    '<div class="form-group">',
+    '<label for="password">Password</label>',
+    '<input type="password" name="password" class="form-control" id="password" placeholder="Password" />',
+    '</div>',
+    '<button onclick="return onSubmitRegister()" id="modalSubmit" class="btn btn-default">Submit</button>',
+    '</form>',
+    '</div>',
+    '<div class="modal-footer">',
+    '<button type="button" class="btn btn-primary" onclick="return logIn()">',
+    'Login',
+    '</button>',
+    '<button type="button" class="btn btn-danger" data-dismiss="modal">',
+    'Exit',
+    '</button>',
+    '</div>',
+    '</div>',
+    '</div>',
+    '</div>'].join('');
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  document.getElementsByTagName("body")[0].appendChild(div);
+  $('#myModalNormRegister').modal('show');
 }
