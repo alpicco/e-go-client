@@ -1,4 +1,4 @@
-const baseURL = "/";
+const baseURL = "https://store.bitc.li:3000/";
 var myOrderList = [];
 
 var onSubmitRegister = function (form) {
@@ -175,9 +175,7 @@ function productDetail(product) {
     '<div style="padding-bottom: 0"></div>',
     '<p><strong>If this is your first order, please insert your shipping details.</strong></p>',
     '<div class="section" style="padding-bottom:20px;">',
-    '<button type="button" data-toggle="modal" data-target="#myModalNormShipping" class="btn btn-primary">Shipping info</button>',
-    '<div style="padding-bottom: 0"></div>',
-    '<button onclick="return addToCart(\'' + sku + '\', document.getElementById(\'quantity\').innerHTML)" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
+    '<button onclick="return addToCart(\'' + sku + '\', document.getElementById(\'quantity\').innerHTML)" class="btn btn-success" style="width: 100%"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
     '</div>',
     '</div>',
     '</div>',
