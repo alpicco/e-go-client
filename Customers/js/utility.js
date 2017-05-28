@@ -46,7 +46,7 @@ function onSubmitLogin() {
     },
     success: function (data) {
       localStorage.setItem("token", data);
-      window.location.reload;
+      window.location = ("product_list.html");
     },
     error: function (xhr) {
       alert("error");
