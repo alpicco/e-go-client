@@ -5,32 +5,13 @@
     <title>Upload</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="utility.js"></script>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="admin.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
 </head>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        var dropZone = document.getElementById('drop-zone');
-        var uploadForm = document.getElementById('js-upload-form');
-
-        var startUpload = function (files) {
-
-        }
-
-        uploadForm.addEventListener('submit', function (e) {
-            var uploadFiles = document.getElementById('js-upload-files').files;
-            e.preventDefault();
-
-            startUpload(uploadFiles);
-        })
-    });
-
-</script>
-
 <body>
-     <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="product_list.html">Titolo stra figo</a>
@@ -41,22 +22,17 @@
         </div>
     </nav>
 
-    <div class="container">
-        <div class="page-header" style="text-align: center">
-            <h2>Upload product</h2>
-        </div>
-
-        <div class="modal-dialog">
-            <div class="register-container">
-                <form id="form" method="POST">
-                    <input type="text" name="title" placeholder="Name">
-                    <input type="text" name="producer" placeholder="Producer">
-                    <input type="text" name="price" placeholder="Price">
-                    <input type="file" name="image">
-                    </br>
-                    <input type="button" class="login loginmodal-submit" value="Upload" onclick="return postNewProduct()">
-                </form>
-            </div>
+    <div class="modal-dialog">
+        <div class="info-container">
+            <h1>Add product</h1>
+            <form id="form" method="POST">
+                <input type="text" name="title" placeholder="Name">
+                <input type="text" name="producer" placeholder="Producer">
+                <input type="text" name="price" placeholder="Price">
+                <input type="file" name="image" id="image" accept=".jpg" onchange="return encodeImageFileAsURL(this)">
+                </br>
+                <input type="button" class="login loginmodal-submit" value="Upload" onclick="return postNewProduct()">
+            </form>
         </div>
     </div>
 </body>

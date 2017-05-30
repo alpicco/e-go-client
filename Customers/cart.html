@@ -31,6 +31,10 @@
                 $("#login").attr("class", "hide");
                 $("#logout").attr("class", "show");
             }
+
+            if(params == "") {
+                $('#paymentButton').prop('disabled', true);
+            }
         });
     </script>
 </head>

@@ -1,4 +1,4 @@
-const baseURL = "https://store.tecnoporto.co:3000/";
+const baseURL = "/";
 var myOrderList = [];
 
 var onSubmitRegister = function (form) {
