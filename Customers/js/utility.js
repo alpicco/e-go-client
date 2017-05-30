@@ -1,14 +1,15 @@
-const baseURL = "/";
+const baseURL = "https://store.bitc.li:3000/";
 var myOrderList = [];
 
 var onSubmitRegister = function (form) {
-  var frm = $("#form");
-  var formData = frm.serializeArray();
-
   var myData = {};
-  $.map(formData, function (obj, i) {
-    myData[obj['name']] = obj['value'];
-  });
+
+  var name = document.getElementById("name").value;
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("password").value;
+  myData['name'] = name;
+  myData['email'] = email;
+  myData['password'] = password;
 
   myData = JSON.stringify(myData);
 
@@ -20,7 +21,7 @@ var onSubmitRegister = function (form) {
     dataType: "text",
     data: myData,
     success: function () {
-      window.location = ("index.html");
+      logIn();
     },
     error: function (xhr) {
       var json = JSON.parse(xhr.responseText);
@@ -174,9 +175,7 @@ function productDetail(product) {
     '<div style="padding-bottom: 0"></div>',
     '<p><strong>If this is your first order, please insert your shipping details.</strong></p>',
     '<div class="section" style="padding-bottom:20px;">',
-    '<button type="button" data-toggle="modal" data-target="#myModalNorm" class="btn btn-primary">Shipping info</button>',
-    '<div style="padding-bottom: 0"></div>',
-    '<button onclick="return addToCart(\'' + sku + '\', document.getElementById(\'quantity\').innerHTML)" class="btn btn-success"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
+    '<button onclick="return addToCart(\'' + sku + '\', document.getElementById(\'quantity\').innerHTML)" class="btn btn-success" style="width: 100%"><span style="margin-right:10px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to cart</button>',
     '</div>',
     '</div>',
     '</div>',
@@ -197,15 +196,10 @@ function getParameterByName(name, url) {
 }
 
 function getProduct(product) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
   $.ajax({
     type: "GET",
     url: baseURL + "products/" + product,
     async: false,
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("Authorization", "Bearer " + auth);
-    },
     success: function (data) {
       localStorage.setItem("data", JSON.stringify(data));
     },
@@ -229,7 +223,8 @@ function addToCart(sku, quantity) {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
   var myData = {};
   myData["sku_id"] = sku;
@@ -238,7 +233,7 @@ function addToCart(sku, quantity) {
 
   $.ajax({
     type: "POST",
-    url: baseURL + "order",
+    url: baseURL + "orders",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -251,6 +246,8 @@ function addToCart(sku, quantity) {
       if (xhr.status == 401) {
         loadLoginModal();
         $('#myModalNorm').modal('show');
+      } else if(xhr.status == 500) {
+        $('#myModalNormShipping').modal('show');
       } else {
         var json = JSON.parse(xhr.responseText);
         var message = JSON.parse(json.message);
@@ -261,8 +258,13 @@ function addToCart(sku, quantity) {
 }
 
 function updateShippingInfos(form) {
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
+  } else {
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
+  }
 
   var frm = $("#modalForm");
   var formData = frm.serializeArray();
@@ -312,7 +314,6 @@ function orderList(data) {
   $.each(data, function (x, v) {
     var items = v.items;
     var id = v.id;
-    myOrderList.push(id);
     var amount = 0;
     var currency;
     var description;
@@ -332,6 +333,9 @@ function orderList(data) {
 
       if (status != "canceled" && status != "paid") {
 
+        if (!myOrderList.includes(id)) {
+          myOrderList.push(id);
+        }
         if ((index % 2) == 0 && index != 0) {
           if ($.isNumeric(taxesAndShipping)) {
             price = price + amount + taxesAndShipping;
@@ -374,8 +378,13 @@ function sourceInfo(token) {
   var myData = {};
   myData['token'] = token.id;
 
-  var token = JSON.parse(localStorage.getItem("token"));
-  var auth = token["token"];
+  if (localStorage.getItem("token") != null) {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var auth = token["token"];
+  } else {
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
+  }
   $.ajax({
     type: "POST",
     url: baseURL + 'me/source',
@@ -432,20 +441,20 @@ function submitPayment() {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
-  var order = getParameterByName("order", window.location.href);
-  var list = [order];
+  var arr = document.URL.match(/or_[0-9a-zA-Z]*/g);
 
   $.ajax({
     type: "POST",
-    url: baseURL + "order/pay",
+    url: baseURL + "orders/pay",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.setRequestHeader("Authorization", "Bearer " + auth);
     },
-    data: JSON.stringify(list),
+    data: JSON.stringify(arr),
     success: function (data) {
       window.location = ("product_list.html");
     },
@@ -467,13 +476,14 @@ function cancelOrder(id) {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
   var list = [id];
 
   $.ajax({
     type: "POST",
-    url: baseURL + "order/cancel",
+    url: baseURL + "orders/cancel",
     async: false,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -506,7 +516,8 @@ function onLoadOrderList() {
     var token = JSON.parse(localStorage.getItem("token"));
     var auth = token["token"];
   } else {
-    window.location.href = ("index.html");
+    loadLoginModal();
+    $('#myModalNorm').modal('show');
   }
   $.ajax({
     type: "GET",
@@ -547,7 +558,7 @@ function loadLoginModal() {
     'Login to your account',
     '</h4>',
     '</div>',
-    '<div class="modal-body">',
+    '<div class="modal-body" id="modal-body>',
     '<form id="modalForm" method="POST">',
     '<div class="form-group">',
     '<label for="name">Name</label>',
@@ -561,6 +572,9 @@ function loadLoginModal() {
     '</form>',
     '</div>',
     '<div class="modal-footer">',
+    '<button type="button" class="btn btn-primary" onclick="return replaceModal()">',
+    'Register',
+    '</button>',
     '<button type="button" class="btn btn-danger" data-dismiss="modal">',
     'Exit',
     '</button>',
@@ -572,4 +586,58 @@ function loadLoginModal() {
   div.innerHTML = html;
   document.getElementsByTagName("body")[0].appendChild(div);
 
+}
+
+function logIn() {
+  $('#myModalNormRegister').modal('hide');
+  loadLoginModal();
+  $('#myModalNorm').modal('show');
+}
+
+function replaceModal() {
+  $('#myModalNorm').modal('hide');
+  var html = ['<div class="modal fade" id="myModalNormRegister" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">',
+    '<div class="modal-dialog">',
+    '<div class="modal-content">',
+    '<div class="modal-header">',
+    '<button type="button" class="close" data-dismiss="modal">',
+    '<span aria-hidden="true">&times;</span>',
+    '<span class="sr-only">Close</span>',
+    '</button>',
+    '<h4 class="modal-title" id="myModalLabel">',
+    'Create an account',
+    '</h4>',
+    '</div>',
+    '<div class="modal-body" id="modal-body>',
+    '<form id="modalFormRegister" method="POST">',
+    '<div class="form-group">',
+    '<label for="name">Name</label>',
+    '<input type="text" name="name" class="form-control" id="name" placeholder="John Smith" />',
+    '</div>',
+    '<div class="form-group">',
+    '<label for="name">User name</label>',
+    '<input type="text" name="email" class="form-control" id="email" placeholder="john@smith.com" />',
+    '</div>',
+    '<div class="form-group">',
+    '<label for="password">Password</label>',
+    '<input type="password" name="password" class="form-control" id="password" placeholder="Password" />',
+    '</div>',
+    '<button onclick="return onSubmitRegister()" id="modalSubmit" class="btn btn-default">Submit</button>',
+    '</form>',
+    '</div>',
+    '<div class="modal-footer">',
+    '<button type="button" class="btn btn-primary" onclick="return logIn()">',
+    'Login',
+    '</button>',
+    '<button type="button" class="btn btn-danger" data-dismiss="modal">',
+    'Exit',
+    '</button>',
+    '</div>',
+    '</div>',
+    '</div>',
+    '</div>'].join('');
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  document.getElementsByTagName("body")[0].appendChild(div);
+  $('#myModalNormRegister').modal('show');
 }

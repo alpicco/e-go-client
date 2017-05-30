@@ -16,10 +16,6 @@ li.active{
     margin-bottom:0px;
     margin-top:20px
 }
-.btn-success, .btn-primary{
-    width:100%;
-    border-radius:0px;
-}
 .section{
     width:100%;
     margin-left:-15px;
