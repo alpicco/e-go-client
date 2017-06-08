@@ -92,19 +92,21 @@ function parseItem(data) {
     var caption = value.caption;
     var description = value.description;
     var url = value.skus.url;
-    var images = value.images;
+    var images;
+    // = value.images;
     var product = value.id;
     var count;
     var skus = value.skus.data;
     var price;
     var sku;
     $.each(skus, function (index, value) {
+      images = value["image"];
       price = value["price"];
       sku = value["id"];
-      count = value["inventory"]["type"];
-    });
+      count = value["inventory"]["quantity"];
+    
 
-    if (count > 0 || count == "infinite") {
+    if (count > 0) {
       var html = ['<div class="container>',
         '<div class="row" id ="cont">',
         '<div class="col-md-3">',
@@ -121,7 +123,7 @@ function parseItem(data) {
         '<div class="small m-t-xs">' + description + '',
         '</div>',
         '<div class="m-t text-right">',
-        '<input type="button" onclick="window.location.href=\'product_detail.html?product=' + product + '\'" class="btn btn-xs btn-outline btn-primary" value="Info">',
+        '<input type="button" onclick="window.location.href=\'product_detail.html?product=' + product + '&sku='+sku+'\'" class="btn btn-xs btn-outline btn-primary" value="Info">',
         '</div>',
         '</div>',
         '</div>',
@@ -133,6 +135,7 @@ function parseItem(data) {
       div.innerHTML = html;
       document.getElementsByTagName("body")[0].appendChild(div);
     }
+    });
   });
 }
 
@@ -141,17 +144,23 @@ function productDetail(product) {
   var data = localStorage.getItem("data");
   var prod = JSON.parse(data);
   var json = JSON.parse(prod);
+  var sku = getParameterByName("sku", window.location.hredf);
   var name = json.name;
-  var image = json.images;
+  var image;
+  // = json.images;
   var skus = json.skus.data;
   var description = json.description;
   var price;
   var count;
   var sku;
   $.each(skus, function (index, value) {
+  //alert(sku + " " + value.id);
+  	if(sku == value.id) {
+    image = value.image;
     price = value.price;
     sku = value.id;
     count = value.inventory.type;
+    }
   });
 
   var html = ['<div class="container">',
